@@ -14,5 +14,15 @@ import java.util.HashMap;
  */
 public class LanguageModel {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LanguageModel.class.getName());
-    private HashMap<String,Double> LanguageModel = new HashMap<>();
+    public HashMap<String,Double> LanguageModel;
+
+    public LanguageModel() {
+         LanguageModel = new HashMap<>();
+    }
+
+    public LanguageModel(HashMap<String,Double> LM){
+        this.LanguageModel = LM;
+    }
+    
+    
 }

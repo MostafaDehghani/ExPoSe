@@ -432,8 +432,8 @@ public class IndexInfo {
         return this.indexId.get(docID);
     }
     
-    public HashMap<String,Integer> getTermFreqVector(Integer docId, String field) throws IOException{
-        HashMap<String,Integer> TV = new HashMap<>();
+    public HashMap<String,Double> getTermFreqVector(Integer docId, String field) throws IOException{
+        HashMap<String,Double> TV = new HashMap<>();
         try {
             Terms vector = ireader.getTermVector(docId,field);
             TermsEnum termsEnum = null;
@@ -441,8 +441,9 @@ public class IndexInfo {
             BytesRef text = null;
             while ((text = termsEnum.next()) != null) {
                 String term = text.utf8ToString();
-                int freq = (int) termsEnum.totalTermFreq();
-                TV.put(term, freq);
+               
+                Long freq =  termsEnum.totalTermFreq();
+                TV.put(term, freq.doubleValue());
             }
 //            Terms terms = this.ireader.getTermVector(docId,field); //get terms vectors for one document and one field
 //            if (terms != null && terms.size() > 0) {
