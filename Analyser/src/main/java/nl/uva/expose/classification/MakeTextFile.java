@@ -34,7 +34,7 @@ public class MakeTextFile {
     private IndexReader ireader;
     private Data data;
 
-    public MakeTextFile(String period) throws IOException, ParserConfigurationException, SAXException, ParseException, XPathExpressionException {
+    public MakeTextFile(String period) throws IOException, ParserConfigurationException, SAXException, ParseException, XPathExpressionException, Exception {
         this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
         this.data = new Data(period);
         for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {

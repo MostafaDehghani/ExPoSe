@@ -6,7 +6,6 @@
 
 package nl.uva.expose.classification;
 
-import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
