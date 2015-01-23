@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.MONTH;
@@ -18,9 +20,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import nl.uva.expose.data.Data;
+import nl.uva.expose.entities.government.Cabinet;
 import nl.uva.expose.entities.member.Member;
 import static nl.uva.expose.settings.Config.configFile;
 import nl.uva.lucenefacility.IndexInfo;
@@ -46,9 +50,9 @@ public class Analysis {
     private IndexReader sireader;
     private IndexInfo sInfo;
     private String period;
-    private Data data;
     private Integer allDebNum;
     private HashSet<String> allNodes = new HashSet<>();
+    private Cabinet cabinet;
 
     public Analysis(String period) throws Exception {
         try {
@@ -57,8 +61,8 @@ public class Analysis {
             miInfo = new IndexInfo(mireader);
             sireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/s")));
             sInfo = new IndexInfo(sireader);
-            data = new Data(this.period);
             allDebNum = calcDebNum();
+            cabinet = new Cabinet(period);
             Scanner sc = new Scanner(new FileInputStream(new File("/Users/Mosi/Desktop/SIGIR_SHORT/debGraph" + this.period + ".csv")));
             sc.nextLine();
             while (sc.hasNext()) {
@@ -92,41 +96,39 @@ public class Analysis {
         BufferedWriter bw = new BufferedWriter(fileWritter);
         bw.write("Id,Gender,Age,Status,Affiliation,SpeechNum,DebateNum,ActivitiRatio,AllSpeechLength,VocabSize,Novelty,SpeechAvgLength\n");
         for (String line : this.allNodes) {
-            Member m = data.members.get(line);
+            Integer memIndexId = this.miInfo.getIndexId(line);
 
-            String gender = m.getGender(); //.equals("male")?"-1":"1";
+            String gender = this.getGender(memIndexId); //.equals("male")?"-1":"1";
             line += "," + gender;
-            Integer age = this.getAgeInYear(m);
+            Integer age = this.getAgeInYear(memIndexId);
             line += "," + age;
-            String status = this.getStatus(m);
+            String status = this.getStatus(memIndexId);
             line += "," + status;
-            String affiliation = this.getAffiliation(m);
+            String affiliation = this.getAffiliation(memIndexId);
             line += "," + affiliation;
-            Double nSpeechNum = this.getSpeechNum(m);
+            Double nSpeechNum = this.getSpeechNum(memIndexId);
             line += "," + nSpeechNum;
-            Double nDebateNum = this.getDebateNum(m);
+            Double nDebateNum = this.getDebateNum(memIndexId);
             line += "," + nDebateNum;
-            Double activityRation = this.getActivityRatio(m);
+            Double activityRation = this.getActivityRatio(memIndexId);
             line += "," + activityRation;
-            Double nAllSpeechlength = this.getAllSpeechlength(m);
+            Double nAllSpeechlength = this.getAllSpeechlength(memIndexId);
             line += "," + nAllSpeechlength;
-            Double nVocabSize = this.getVocabSize(m);
+            Double nVocabSize = this.getVocabSize(memIndexId);
             line += "," + nVocabSize;
-            Double Novelty = this.getNovelty(m);
+            Double Novelty = this.getNovelty(memIndexId);
             line += "," + Novelty;
-            Double SpeechAvgLength = this.getSpeechAvgLength(m);
+            Double SpeechAvgLength = this.getSpeechAvgLength(memIndexId);
             line += "," + SpeechAvgLength;
             bw.write(line + "\n");
         }
         bw.close();
     }
 
-    private Integer getAgeInYear(Member m) throws java.text.ParseException {
-        if (m.getbDate().date == null) {
-            return 0;
-        }
-        Date last = this.data.cabinets.startDate;
-        Date first = m.getbDate().date;
+    private Integer getAgeInYear(Integer memIndexId) throws java.text.ParseException, IOException {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date first = formatter.parse(this.mireader.document(memIndexId).get("BDATE"));
+        Date last = this.cabinet.startDate;
         Calendar a = getCalendar(first);
         Calendar b = getCalendar(last);
         Integer diff = b.get(YEAR) - a.get(YEAR);
@@ -136,6 +138,16 @@ public class Analysis {
         }
         return diff;
     }
+    
+    private String getGender(Integer memIndexId) throws java.text.ParseException, IOException {
+        
+        try {
+            return this.mireader.document(memIndexId).get("GENDER");
+        } catch (IOException ex) {
+            log.error(ex);
+            throw ex;
+        }
+    }
 
     public static Calendar getCalendar(Date date) {
         Calendar cal = Calendar.getInstance(Locale.US);
@@ -143,13 +155,14 @@ public class Analysis {
         return cal;
     }
 
-    private String getStatus(Member m) {
+    private String getStatus(Integer memIndexId) throws IOException {
         String aff = "";
         String status = "Oposition";
-        for (String s : m.getAffiliations()) {
+        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId,"AFF");
+        for (String s : affiliations) {
             aff += s + " ";
         }
-        for (String coa : this.data.cabinets.coalitionPartiesID) {
+        for (String coa : this.cabinet.coalitionPartiesID) {
             if (aff.contains(coa)) {
                 status = "Coalition";
                 break;
@@ -161,56 +174,54 @@ public class Analysis {
         if (aff.equals("parl")) {
             status = "0";
         }
-        Integer affNum = m.getAffiliations().size();
+        Integer affNum = affiliations.size();
         if (affNum != 1) {
-            System.err.println(affNum + " --- " + m.getmId() + ": " + status);
+            System.err.println(affNum + " --- " + memIndexId + ": " + status);
         }
         return status;
     }
 
-    private String getAffiliation(Member m) {
+    private String getAffiliation(Integer memIndexId) throws IOException {
         String aff = "";
-        for (String s : m.getAffiliations()) {
+        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId,"AFF");
+        for (String s : affiliations) {
             aff += s + " ";
         }
-        Integer affNum = m.getAffiliations().size();
+        Integer affNum = affiliations.size();
         if (affNum != 1) {
-            System.err.println(affNum + " --- " + m.getmId() + ": " + aff);
+            System.err.println(affNum + " --- " + memIndexId + ": " + aff);
         }
 //        aff = aff.replaceAll("gov", "");
         return aff.trim();
     }
 
-    public Double getAllSpeechlength(Member m) throws IOException {
-        int indexDocId = this.miInfo.getIndexId(m.getmId());
-        Long l = this.miInfo.getDocumentLength(indexDocId, "TEXT");
+    public Double getAllSpeechlength(Integer memIndexId) throws IOException {
+        Long l = this.miInfo.getDocumentLength(memIndexId, "TEXT");
         Long L = this.sInfo.getNumOfAllTerms("TEXT");
         Double normL = l.doubleValue() / L.doubleValue();
         return normL;
     }
 
-    public Double getVocabSize(Member m) throws IOException {
-        int indexDocId = this.miInfo.getIndexId(m.getmId());
-        Long v = this.miInfo.getNumberofUniqTermsInDocument(indexDocId, "TEXT");
+    public Double getVocabSize(Integer memIndexId) throws IOException {
+        Long v = this.miInfo.getNumberofUniqTermsInDocument(memIndexId, "TEXT");
         Long V = this.sInfo.getNumOfAllUniqueTerms_PerField("TEXT");
         Double normV = v.doubleValue() / V.doubleValue();
         return normV;
     }
 
-    public Double getNovelty(Member m) throws IOException {
+    public Double getNovelty(Integer memIndexId) throws IOException {
         Double n;
-        int indexDocId = this.miInfo.getIndexId(m.getmId());
-        Long v = this.miInfo.getNumberofUniqTermsInDocument(indexDocId, "TEXT");
-        Long l = this.miInfo.getDocumentLength(indexDocId, "TEXT");
+        Long v = this.miInfo.getNumberofUniqTermsInDocument(memIndexId, "TEXT");
+        Long l = this.miInfo.getDocumentLength(memIndexId, "TEXT");
         n = v.doubleValue() / l.doubleValue();
         return n;
     }
 
-    public Double getSpeechAvgLength(Member m) throws IOException {
+    public Double getSpeechAvgLength(Integer memIndexId) throws IOException {
         Double lengthAvg = 0D;
         int count = 0;
         TermsEnum te = MultiFields.getTerms(this.sireader, "SPEAKERID").iterator(null);
-        BytesRef id = new BytesRef(m.getmId());
+        BytesRef id = new BytesRef(this.mireader.document(memIndexId).get("ID"));
         te.seekExact(id);
         DocsEnum docsEnum = te.docs(null, null);
         int docIdEnum;
@@ -223,10 +234,10 @@ public class Analysis {
         return lengthAvg / count;
     }
 
-    public Double getSpeechNum(Member m) throws IOException {
+    public Double getSpeechNum(Integer memIndexId) throws IOException {
         Long speechNum = 0L;
         TermsEnum te = MultiFields.getTerms(this.sireader, "SPEAKERID").iterator(null);
-        BytesRef id = new BytesRef(m.getmId());
+        BytesRef id = new BytesRef(this.mireader.document(memIndexId).get("ID"));
         te.seekExact(id);
         DocsEnum docsEnum = te.docs(null, null);
         int docIdEnum;
@@ -238,11 +249,11 @@ public class Analysis {
         return normalizedSN;
     }
 
-    public Double getDebateNum(Member m) throws IOException {
+    public Double getDebateNum(Integer memIndexId) throws IOException {
 
         HashSet<String> debIds = new HashSet<>();
         TermsEnum te = MultiFields.getTerms(this.sireader, "SPEAKERID").iterator(null);
-        BytesRef id = new BytesRef(m.getmId());
+        BytesRef id = new BytesRef(this.mireader.document(memIndexId).get("ID"));
         te.seekExact(id);
         DocsEnum docsEnum = te.docs(null, null);
         int docIdEnum;
@@ -253,27 +264,18 @@ public class Analysis {
         return normalizedDN;
     }
 
-    public Double getActivityRatio(Member m) throws IOException {
-
+    public Double getActivityRatio(Integer memIndexId) throws IOException {
+        Long speechNum = 0L;
         HashSet<String> debIds = new HashSet<>();
         TermsEnum te = MultiFields.getTerms(this.sireader, "SPEAKERID").iterator(null);
-        BytesRef id = new BytesRef(m.getmId());
+        BytesRef id = new BytesRef(this.mireader.document(memIndexId).get("ID"));
         te.seekExact(id);
         DocsEnum docsEnum = te.docs(null, null);
         int docIdEnum;
         while ((docIdEnum = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS) {
+            speechNum++;
             debIds.add(this.sireader.document(docIdEnum).get("DEBATEID"));
         }
-        Long speechNum = 0L;
-        TermsEnum te2 = MultiFields.getTerms(this.sireader, "SPEAKERID").iterator(null);
-        BytesRef id2 = new BytesRef(m.getmId());
-        te2.seekExact(id2);
-        DocsEnum docsEnum2 = te2.docs(null, null);
-        int docIdEnum2;
-        while ((docIdEnum2 = docsEnum2.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS) {
-            speechNum++;
-        }
-
         Double ar = debIds.size() / speechNum.doubleValue();
         return ar;
     }

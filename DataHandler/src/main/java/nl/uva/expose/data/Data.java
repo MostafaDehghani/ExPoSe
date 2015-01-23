@@ -31,7 +31,7 @@ public class Data {
     public HashMap<String,Party> parties;
     public HashMap<String,Speech> speeches;
     public HashMap<String,Debate> debates;
-    public Cabinet cabinets;
+    public Cabinet cabinet;
 
 
     public Data(String period) throws ParserConfigurationException, SAXException, IOException, ParseException, XPathExpressionException{

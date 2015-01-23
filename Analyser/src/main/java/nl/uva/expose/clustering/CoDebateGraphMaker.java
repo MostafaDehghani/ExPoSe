@@ -12,14 +12,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import nl.uva.expose.data.Data;
-import nl.uva.expose.entities.debate.Debate;
-import nl.uva.expose.entities.speech.Speech;
 import static nl.uva.expose.settings.Config.configFile;
+import nl.uva.lucenefacility.IndexInfo;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.TermsEnum;
@@ -35,8 +32,9 @@ public class CoDebateGraphMaker {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CoDebateGraphMaker.class.getName());
     private IndexReader mireader;
+    private IndexReader direader;
+    private IndexInfo diInfo;
     private String period;
-    private Data data;
     private HashSet<String> mids = new HashSet<>();
     private HashMap<String, Integer> memDebNum = new HashMap<String, Integer>();
 
@@ -44,7 +42,8 @@ public class CoDebateGraphMaker {
         try {
             this.period = period;
             mireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
-            this.data = new Data(this.period);
+            direader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/d")));
+            this.diInfo = new IndexInfo(direader);
             this.loadMIds();
         } catch (IOException ex) {
             log.error(ex);
@@ -55,12 +54,14 @@ public class CoDebateGraphMaker {
     public HashMap<String, Integer> edges = new HashMap<>();
 
     public void graphGen() throws IOException {
-        for (Map.Entry<String, Debate> e : this.data.debates.entrySet()) {
-            for (String m1id : this.getInvMemb(e.getValue())) {
+        
+        for(int i=0; i<this.direader.numDocs();i++){
+            HashSet<String> invPmem = this.diInfo.getDocAllTerm(i, "INVOLVEDPMEMBERSID");
+            for (String m1id : invPmem) {
                 if (!this.mids.contains(m1id)) {
                     continue;
                 }
-                for (String m2id : this.getInvMemb(e.getValue())) {
+                for (String m2id :invPmem) {
                     if (!this.mids.contains(m2id)) {
                         continue;
                     }
@@ -101,16 +102,7 @@ public class CoDebateGraphMaker {
         }
         System.out.println("");
     }
-
-    public HashSet<String> getInvMemb(Debate d) {
-        HashSet<String> im = new HashSet<>();
-        for (Map.Entry<String, Speech> e : d.debSpeeches.entrySet()) {
-            im.add(e.getValue().getSpeakerId());
-        }
-        this.debCounter(im);
-        return im;
-    }
-
+    
     public void debCounter(HashSet<String> debInMem) {
         for (String mid : debInMem) {
             Integer cnt = this.memDebNum.get(mid);
@@ -120,7 +112,6 @@ public class CoDebateGraphMaker {
             this.memDebNum.put(mid, cnt + 1);
         }
     }
-
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, ParseException, XPathExpressionException {
         CoDebateGraphMaker cdgk = new CoDebateGraphMaker("20122014");
         cdgk.graphGen();

@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import nl.uva.expose.entities.debate.Debate;
@@ -41,7 +43,7 @@ public class DataLoader {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DataLoader.class.getName());
     private Data data;
     private HashSet<String> pmDebateList = new HashSet<>();
-    public DataLoader(Data data, String period)throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, ParseException {
+    public DataLoader(Data data, String period)throws Exception {
         this.data = data;
         try{
             File pmInfoDir = new File(configFile.getProperty("MEMBER_INFO_FILES_PATHS"));
@@ -52,12 +54,11 @@ public class DataLoader {
             this.politicalMashupDebateListLoader(pmdlFile);
             this.data.members = pMemDataLoader(pmInfoDir);
             this.data.parties = parDataLoader(pInfoDir);
-            this.data.cabinets = cabinetDataLoader();
+            this.data.cabinet = new Cabinet(period);
             this.data.debates = debateDataLoader(dInfoDir);
             this.memSpeechLoader();
             
-        } catch (ParserConfigurationException|SAXException|IOException|
-                    XPathExpressionException|ParseException ex) {
+        } catch (Exception ex) {
                 log.error(ex);
                 throw ex;
         }
@@ -127,48 +128,6 @@ public class DataLoader {
         }
         return parties;
     }
-    
-    public Cabinet cabinetDataLoader() throws ParseException {
-        Cabinet cabinet = null;
-        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        if(this.data.period.equals("20062010")){
-            try {
-                //
-                Date sD= formatter.parse("22-02-2007");
-                Date eD= formatter.parse("14-10-2010");
-                ArrayList coalition = new ArrayList(Arrays.asList("nl.p.cda", "nl.p.pvda", "nl.p.cu"));
-                cabinet = new Cabinet("BalkenendeIV",sD, eD, coalition);
-            } catch (ParseException ex) {
-                log.error(ex);
-                throw ex;
-            }
-        }
-        if(this.data.period.equals("20102012")){
-            try {
-                //
-                Date sD= formatter.parse("14-10-2010");
-                Date eD= formatter.parse("05-11-2012");
-                ArrayList coalition = new ArrayList(Arrays.asList("nl.p.vvd", "nl.p.cda"));
-                cabinet = new Cabinet("rutte-I",sD, eD, coalition);
-            } catch (ParseException ex) {
-                log.error(ex);
-                throw ex;
-            }
-        }
-        if(this.data.period.equals("20122014")){
-            try {
-                //
-                Date sD= formatter.parse("05-11-2012");
-                Date eD= new Date();
-                ArrayList coalition = new ArrayList(Arrays.asList("nl.p.vvd", "nl.p.pvda"));
-                cabinet  = new Cabinet("rutte-IّI",sD, eD, coalition);
-            } catch (ParseException ex) {
-                log.error(ex);
-                throw ex;
-            }
-        }
-        return cabinet;
-    }
     public HashMap<String, Debate> debateDataLoader(File file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, ParseException {
         HashMap<String,Debate> debates = new HashMap<>();
         File dInfoFiles = file;
@@ -192,10 +151,13 @@ public class DataLoader {
                 d.setSessionNum(dParser.getSessionNumber());
                 d.setAllSpeechs(dParser.getAllSpeeches());
                 d.debSpeeches.putAll(dParser.getSpeeches());
-                this.data.speeches.putAll(dParser.getSpeeches());
+                this.data.speeches.putAll(d.debSpeeches);
+                HashSet<String> im = new HashSet<>();
+                for(Map.Entry<String, Speech> e : d.debSpeeches.entrySet()) {
+                    im.add(e.getValue().getSpeakerId());
+                }
+                d.setInvolvedPMembersId(im);
                 debates.put(d.getdId(),d);
-                
-                
                 log.info("Debate file: " + dInfoF.getName()+ "is processed...");
             } catch (ParserConfigurationException|SAXException|IOException|
                     XPathExpressionException|ParseException ex) {

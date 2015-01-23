@@ -430,6 +430,16 @@ public class IndexInfo {
             
         }
         return this.indexId.get(docID);
+
+//        TermsEnum te = MultiFields.getTerms(this.ireader, "ID").iterator(null);
+//        BytesRef id = new BytesRef(docID);
+//        te.seekExact(id);
+//        DocsEnum docsEnum = te.docs(null, null);
+//        int docIdEnum;
+//        while ((docIdEnum = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS) {
+//            return docIdEnum;
+//        }
+
     }
     
     public HashMap<String,Double> getTermFreqVector(Integer docId, String field) throws IOException{

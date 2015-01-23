@@ -45,7 +45,8 @@ public class DebatesIndexer extends Indexer {
         analyzerMap.put("ID", new KeywordAnalyzer());//StandardAnalyzer(Version.LUCENE_CURRENT));
         analyzerMap.put("CHAIRMANID", new KeywordAnalyzer());//StandardAnalyzer(Version.LUCENE_CURRENT));
         analyzerMap.put("SESSIONNUM", new KeywordAnalyzer());//StandardAnalyzer(Version.LUCENE_CURRENT));
-        analyzerMap.put("INVOLVEDMEMBERSID", new MyAnalyzer(false).ArbitraryCharacterAsDelimiterAnalyzer(','));// new WhitespaceAnalyzer());
+        analyzerMap.put("INVOLVEDMEMBERSID",  new WhitespaceAnalyzer());
+        analyzerMap.put("INVOLVEDPMEMBERSID",  new WhitespaceAnalyzer());
         analyzerMap.put("PRESENTMEMBERSID", new WhitespaceAnalyzer());
         analyzerMap.put("SPEECHESID", new WhitespaceAnalyzer());
         analyzerMap.put("SCENESID", new WhitespaceAnalyzer());
@@ -69,26 +70,37 @@ public class DebatesIndexer extends Indexer {
         doc.add(new Field("TOPIC", d.getdTopic(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", d.getAllSpeechs().toString(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("DATE", d.getDate().toString(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        
         String inv = "";
         for (String s : d.getInvolvedMembersId()) {
             inv += s.trim() +  " ";
         }
         doc.add(new Field("INVOLVEDMEMBERSID", inv, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        
+        String pinv = "";
+        for (String s : d.getInvolvedPMembersId()) {
+            pinv += s.trim() +  " ";
+        }
+        doc.add(new Field("INVOLVEDPMEMBERSID", pinv, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        
         String pres = "";
         for (String s : d.getPresentMembersId()) {
             pres += s.trim() +  ",";
         }
+        
         doc.add(new Field("PRESENTMEMBERSID", pres, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         String spee = "";
         for (String s : d.getSpeechesId()) {
             spee += s.trim() +  " ";
         }
         doc.add(new Field("SPEECHESID", spee, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        
         String sce = "";
         for (String s : d.getScenesId()) {
             sce += s.trim() +  " ";
         }
         doc.add(new Field("SCENESID",sce, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        
         try {
             writer.addDocument(doc);
         } catch (IOException ex) {

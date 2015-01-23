@@ -24,6 +24,7 @@ public class Debate {
     private String sessionNum = "";
     private DateTime date;
     private HashSet<String> involvedMembersId = new HashSet<>();
+    private HashSet<String> involvedPMembersId = new HashSet<>();
     private HashSet<String> presentMembersId = new HashSet<>();
     private HashSet<String> speechesId = new HashSet<>();
     private HashSet<String> scenesId = new HashSet<>();
@@ -32,7 +33,7 @@ public class Debate {
     public HashMap<String, Speech> debSpeeches = new HashMap<>();
 
     public Debate(String dId, String sessionNum, String dTopic, String dTitle, DateTime date, 
-            HashSet<String> involvedMembersId, HashSet<String> presentMembersId, 
+            HashSet<String> involvedMembersId, HashSet<String> involvedPMembersId , HashSet<String> presentMembersId, 
             HashSet<String> MembersId, HashSet<String> speechesId, HashSet<String> scenesId, String chairmanId
             ,StringBuilder allSpeeches) {
         this.dId = dId;
@@ -40,6 +41,7 @@ public class Debate {
         this.dTitle = dTitle;
         this.date = date;
         this.involvedMembersId = involvedMembersId;
+        this.involvedPMembersId = involvedPMembersId;
         this.presentMembersId = presentMembersId;
         this.speechesId = speechesId;
         this.scenesId = scenesId;
@@ -71,6 +73,10 @@ public class Debate {
 
     public HashSet<String> getInvolvedMembersId() {
         return involvedMembersId;
+    }
+    
+    public HashSet<String> getInvolvedPMembersId() {
+        return involvedPMembersId;
     }
 
     public HashSet<String> getPresentMembersId() {
@@ -119,6 +125,10 @@ public class Debate {
 
     public void setInvolvedMembersId(HashSet<String> involvedMembersId) {
         this.involvedMembersId = involvedMembersId;
+    }
+    
+    public void setInvolvedPMembersId(HashSet<String> involvedPMembersId) {
+        this.involvedPMembersId = involvedPMembersId;
     }
 
     public void setPresentMembersId(HashSet<String> presentMembersId) {

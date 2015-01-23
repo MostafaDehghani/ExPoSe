@@ -72,7 +72,7 @@ public class MakeTextFile {
             for (String s : mtf.data.members.get(id).getAffiliations()) {
                 aff += s + " ";
             }
-            for (String coa : mtf.data.cabinets.coalitionPartiesID) {
+            for (String coa : mtf.data.cabinet.coalitionPartiesID) {
                 if (aff.contains(coa)) {
                     status = "Coalition";
                     break;
