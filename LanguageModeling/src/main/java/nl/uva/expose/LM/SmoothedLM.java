@@ -7,7 +7,10 @@
 package nl.uva.expose.LM;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import nl.uva.expose.genral.LanguageModel;
+import static nl.uva.expose.genral.Tools.sortByValues;
 
 /**
  *
@@ -22,6 +25,7 @@ public class SmoothedLM {
     public SmoothedLM(LanguageModel documentLM , LanguageModel backgroundLM, Double Lambda) {
         this.backgroundLM = backgroundLM;
         this.documentLM = documentLM;
+        this. smoothedLM = new LanguageModel();
         this.backgroundLM = this.generateSmoothedLanguageModel(Lambda);
     }
     
@@ -36,9 +40,21 @@ public class SmoothedLM {
             Double backgoundProb = this.backgroundLM.LanguageModel.get(s);
             if(backgoundProb == null)
                 backgoundProb=0D;
+            if(documentProb == null)
+                documentProb=0D;
             Double newProb = (lambda * documentProb + ((1-lambda)*backgoundProb));
             this.smoothedLM.LanguageModel.put(s, newProb);
         }
         return this.smoothedLM;
+    }
+    
+    public List<Map.Entry<String, Double>>  getTopK(Integer k){
+        List<Map.Entry<String, Double>>  sorted = sortByValues(smoothedLM.LanguageModel, false);
+        return sorted.subList(0, k);
+    }
+    
+    public List<Map.Entry<String, Double>>  getSorted(){
+        List<Map.Entry<String, Double>>  sorted = sortByValues(smoothedLM.LanguageModel, false);
+        return sorted;
     }
 }

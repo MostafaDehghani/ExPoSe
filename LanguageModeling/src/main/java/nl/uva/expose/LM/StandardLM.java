@@ -8,11 +8,10 @@ package nl.uva.expose.LM;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.expose.genral.LanguageModel;
+import static nl.uva.expose.genral.Tools.sortByValues;
 import nl.uva.lucenefacility.IndexInfo;
 import org.apache.lucene.index.IndexReader;
 
@@ -22,7 +21,7 @@ import org.apache.lucene.index.IndexReader;
  */
 public class StandardLM {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StandardLM.class.getName());
-    public LanguageModel LM;
+    public LanguageModel languageModel;
     private IndexReader ireader;
     private Integer dId;
     private String field;
@@ -33,9 +32,9 @@ public class StandardLM {
         this.ireader = ireader;
         this.dId= dId;
         this.field = field;
-        this.iInfo = new IndexInfo(ireader);
+        this.iInfo = new IndexInfo(this.ireader);
         try {
-            this.LM = generateStandardLanguageModel();
+            this.languageModel = generateStandardLanguageModel();
         } catch (IOException ex) {
             log.error(ex);
             throw ex;
@@ -58,5 +57,13 @@ public class StandardLM {
         LanguageModel SLM = new LanguageModel(tv);
         return SLM;
     }
+    public List<Map.Entry<String, Double>>  getTopK(Integer k){
+        List<Map.Entry<String, Double>>  sorted = sortByValues(languageModel.LanguageModel, false);
+        return sorted.subList(0, k);
+    }
     
+    public List<Map.Entry<String, Double>>  getSorted(){
+        List<Map.Entry<String, Double>>  sorted = sortByValues(languageModel.LanguageModel, false);
+        return sorted;
+    }
 }
