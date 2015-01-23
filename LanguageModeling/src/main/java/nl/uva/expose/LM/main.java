@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.LM;
 
 import java.io.File;
@@ -20,19 +19,20 @@ import org.apache.lucene.store.SimpleFSDirectory;
  * @author Mostafa Dehghani
  */
 public class main {
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
-    
+
     public static void main(String[] args) throws IOException {
         String period = "20062010";
         IndexReader miReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
         IndexReader piReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/p")));
         IndexInfo miInfo = new IndexInfo(miReader);
-        StandardLM mSLM = new StandardLM(miReader,0,"TEXT");
-        StandardLM pSLM = new StandardLM(piReader,3,"TEXT");
+        StandardLM mSLM = new StandardLM(miReader, 0, "TEXT");
+        StandardLM pSLM = new StandardLM(piReader, 3, "TEXT");
         HashMap<String, Double> mtv = miInfo.getTermFreqVector(0, "TEXT");
-        ParsimoniousLM mPLM = new ParsimoniousLM(mSLM.languageModel,mtv,pSLM.languageModel, 0.1D,0.001D,100);
+        ParsimoniousLM mPLM = new ParsimoniousLM(mSLM.languageModel, mtv, pSLM.languageModel, 0.1D, 0.001D, 100);
         SmoothedLM mSmLM = new SmoothedLM(mSLM.languageModel, mSLM.languageModel, 0.1);
-        
+
 //        System.out.println("@Standard");
 //        for (Entry<String,Double> e : mSLM.getSorted()) {
 //            System.out.println(e.getKey() + "," + e.getValue());
@@ -42,9 +42,9 @@ public class main {
 //            System.out.println(e.getKey() + ":" + e.getValue());
 //        }
         System.out.println("@Parsimonious");
-        for (Entry<String,Double> e : mPLM.getSorted()) {
+        for (Entry<String, Double> e : mPLM.getSorted()) {
             System.out.println(e.getKey() + "," + e.getValue());
         }
-        
+
     }
 }

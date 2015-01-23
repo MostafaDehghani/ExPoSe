@@ -266,7 +266,7 @@ public class Stats {
     public static void getStatistics(String period) throws IOException, ParserConfigurationException, SAXException, java.text.ParseException, XPathExpressionException {
         FileWriter fileWritter = new FileWriter("/Users/Mosi/Desktop/SIGIR_SHORT/MembersStat" + period + ".csv");
         BufferedWriter bw = new BufferedWriter(fileWritter);
-        Scanner sc = new Scanner(new File("/Users/Mosi/Desktop/SIGIR_SHORT/debGraph" + period + "[Nodes]-4Weka.csv"));
+        Scanner sc = new Scanner(new File("/Users/Mosi/Desktop/SIGIR_SHORT/debGraph" + period + ".csv"));
         int index = 0;
 
         for (String s : sc.nextLine().split(",")) {

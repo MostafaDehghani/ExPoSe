@@ -4,7 +4,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.genral;
 
 import java.util.Collections;
@@ -18,23 +17,18 @@ import java.util.Map;
  * @author Mostafa Dehghani
  */
 public class Tools {
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Tools.class.getName());
-   
-    public static List<Map.Entry<String, Double>>  sortByValues(Map<String, Double> unsortMap, final boolean order)
-    {
+
+    public static List<Map.Entry<String, Double>> sortByValues(Map<String, Double> unsortMap, final boolean order) {
         List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());
         // Sorting the list based on values
-        Collections.sort(list, new Comparator<Map.Entry<String, Double>>()
-        {
+        Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
             public int compare(Map.Entry<String, Double> o1,
-                    Map.Entry<String, Double> o2)
-            {
-                if (order)
-                {
+                    Map.Entry<String, Double> o2) {
+                if (order) {
                     return o1.getValue().compareTo(o2.getValue());
-                }
-                else
-                {
+                } else {
                     return o2.getValue().compareTo(o1.getValue());
 
                 }

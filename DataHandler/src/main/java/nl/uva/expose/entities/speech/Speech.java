@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.entities.speech;
 
 import org.apache.log4j.Logger;
@@ -13,17 +12,17 @@ import org.apache.log4j.Logger;
  * @author Mostafa Dehghani
  */
 public class Speech {
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Speech.class.getName());
     private String speecheId;
     private String speakerId;
     private String speakerAffiliation = "";
     private String speakerRole = "";
-    private String speakerFunction  = "";
+    private String speakerFunction = "";
     private String debateId;
     private StringBuilder speechText;
     private String sceneId;
 
-    
     public Speech(String sId, String speakerId, String speakerAff, String speakerRole, String speakerFunc, String debateId, String sceneId, StringBuilder speechText) {
         this.speecheId = sId;
         this.speakerId = speakerId;
@@ -37,7 +36,6 @@ public class Speech {
 
     public Speech() {
     }
-    
 
     public static Logger getLog() {
         return log;
@@ -106,8 +104,5 @@ public class Speech {
     public void setSceneId(String sceneId) {
         this.sceneId = sceneId;
     }
-    
-    
-    
-}
 
+}

@@ -20,12 +20,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import nl.uva.expose.entities.government.Cabinet;
-import nl.uva.expose.entities.member.Member;
 import static nl.uva.expose.settings.Config.configFile;
 import nl.uva.lucenefacility.IndexInfo;
 import org.apache.lucene.index.DocsEnum;
@@ -42,9 +39,9 @@ import org.xml.sax.SAXException;
  *
  * @author mosi
  */
-public class Analysis {
+public class FeatureExtraction {
 
-    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Analysis.class.getName());
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeatureExtraction.class.getName());
     private IndexReader mireader;
     private IndexInfo miInfo;
     private IndexReader sireader;
@@ -54,7 +51,7 @@ public class Analysis {
     private HashSet<String> allNodes = new HashSet<>();
     private Cabinet cabinet;
 
-    public Analysis(String period) throws Exception {
+    public FeatureExtraction(String period) throws Exception {
         try {
             this.period = period;
             mireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
@@ -96,6 +93,8 @@ public class Analysis {
         BufferedWriter bw = new BufferedWriter(fileWritter);
         bw.write("Id,Gender,Age,Status,Affiliation,SpeechNum,DebateNum,ActivitiRatio,AllSpeechLength,VocabSize,Novelty,SpeechAvgLength\n");
         for (String line : this.allNodes) {
+            System.out.println("Member id: " + line);
+
             Integer memIndexId = this.miInfo.getIndexId(line);
 
             String gender = this.getGender(memIndexId); //.equals("male")?"-1":"1";
@@ -138,9 +137,8 @@ public class Analysis {
         }
         return diff;
     }
-    
+
     private String getGender(Integer memIndexId) throws java.text.ParseException, IOException {
-        
         try {
             return this.mireader.document(memIndexId).get("GENDER");
         } catch (IOException ex) {
@@ -157,23 +155,11 @@ public class Analysis {
 
     private String getStatus(Integer memIndexId) throws IOException {
         String aff = "";
-        String status = "Oposition";
-        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId,"AFF");
+        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
         for (String s : affiliations) {
             aff += s + " ";
         }
-        for (String coa : this.cabinet.coalitionPartiesID) {
-            if (aff.contains(coa)) {
-                status = "Coalition";
-                break;
-            }
-        }
-        if (aff.contains("gov")) {
-            status = "1";
-        }
-        if (aff.equals("parl")) {
-            status = "0";
-        }
+        String status = this.cabinet.getStatus(aff);
         Integer affNum = affiliations.size();
         if (affNum != 1) {
             System.err.println(affNum + " --- " + memIndexId + ": " + status);
@@ -183,7 +169,7 @@ public class Analysis {
 
     private String getAffiliation(Integer memIndexId) throws IOException {
         String aff = "";
-        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId,"AFF");
+        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
         for (String s : affiliations) {
             aff += s + " ";
         }
@@ -281,7 +267,7 @@ public class Analysis {
     }
 
     public static void main(String[] args) throws IOException, ParseException, ParserConfigurationException, SAXException, java.text.ParseException, XPathExpressionException, Exception {
-        Analysis anal = new Analysis("20062010");
+        FeatureExtraction anal = new FeatureExtraction("20062010");
         anal.dataEnreachment();
     }
 }

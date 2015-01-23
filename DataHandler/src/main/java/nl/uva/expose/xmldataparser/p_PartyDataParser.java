@@ -40,14 +40,13 @@ public class p_PartyDataParser {
     private XPathFactory xPathfactory = null;
     private XPath xpath = null;
     private XPathExpression expr = null;
-    
-    
-    public void init(String uri) throws ParserConfigurationException, SAXException, IOException{
+
+    public void init(String uri) throws ParserConfigurationException, SAXException, IOException {
         factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         try {
             builder = factory.newDocumentBuilder();
-        }catch (ParserConfigurationException ex) {
+        } catch (ParserConfigurationException ex) {
             log.error(ex);
             throw ex;
         }
@@ -59,15 +58,15 @@ public class p_PartyDataParser {
         }
         xPathfactory = XPathFactory.newInstance();
         xpath = xPathfactory.newXPath();
-        xpath.setNamespaceContext(new UniversalNamespaceCache(doc,true));
+        xpath.setNamespaceContext(new UniversalNamespaceCache(doc, true));
     }
-    
+
     public String getPartyId() throws XPathExpressionException {
         String id = null;
         try {
-            XPathExpression expr =
-                    this.xpath.compile("//dc:identifier/text()");
-            
+            XPathExpression expr
+                    = this.xpath.compile("//dc:identifier/text()");
+
             id = (String) expr.evaluate(this.doc, XPathConstants.STRING);
         } catch (XPathExpressionException ex) {
             log.error(ex);
@@ -75,92 +74,91 @@ public class p_PartyDataParser {
         }
         return id;
     }
-    
-     
+
     public String getFullName() throws XPathExpressionException {
         String fullName = null;
         try {
-            XPathExpression expr =
-                    this.xpath.compile("/root/pm:party/pm:name/text()");
+            XPathExpression expr
+                    = this.xpath.compile("/root/pm:party/pm:name/text()");
             fullName = (String) expr.evaluate(this.doc, XPathConstants.STRING);
         } catch (XPathExpressionException ex) {
-            log.error("file path:" + this.getPartyId()+ "\n" + ex);
+            log.error("file path:" + this.getPartyId() + "\n" + ex);
             throw ex;
         }
         return fullName;
     }
-    
-     public DateTime getFormationDate() throws XPathExpressionException, ParseException {
+
+    public DateTime getFormationDate() throws XPathExpressionException, ParseException {
         DateTime fDate = null;
         try {
-            XPathExpression expr =
-                    this.xpath.compile("//pm:history/pm:formation");
+            XPathExpression expr
+                    = this.xpath.compile("//pm:history/pm:formation");
             Node node = (Node) expr.evaluate(doc, XPathConstants.NODE);
-            try{
+            try {
                 String dateStr = node.getAttributes().getNamedItem("pm:date").getNodeValue();
                 String dateGraStr = node.getAttributes().getNamedItem("pm:granularity").getNodeValue();
                 fDate = new DateTime(dateStr, dateGraStr);
             } catch (NullPointerException ex) {
-                log.error("No Formation Date info for party:" + this.getPartyId()+ "\n" + ex);
+                log.error("No Formation Date info for party:" + this.getPartyId() + "\n" + ex);
                 return new DateTime();
-            }   
-        } catch (XPathExpressionException|ParseException ex) {
+            }
+        } catch (XPathExpressionException | ParseException ex) {
             log.error("file path:" + this.getPartyId() + "\n" + ex);
             throw ex;
-        } 
+        }
         return fDate;
     }
-    
-     public ArrayList<String> getAnccestorsID() throws XPathExpressionException {
+
+    public ArrayList<String> getAnccestorsID() throws XPathExpressionException {
         ArrayList<String> paId = new ArrayList<>();
         try {
-           XPathExpression expr =
-                    this.xpath.compile("//pm:history/pm:ancestors/pm:party-ref");
+            XPathExpression expr
+                    = this.xpath.compile("//pm:history/pm:ancestors/pm:party-ref");
             NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-            for (int i = 0; i < nodeList.getLength(); i++){
+            for (int i = 0; i < nodeList.getLength(); i++) {
                 paId.add(nodeList.item(i).getAttributes().getNamedItem("pm:party-ref").getNodeValue());
             }
         } catch (XPathExpressionException ex) {
-            log.error("file path:" + this.getPartyId()+ "\n" + ex);
+            log.error("file path:" + this.getPartyId() + "\n" + ex);
             throw ex;
         }
         return paId;
     }
-     
-    public ArrayList<Seat> getSeats() throws XPathExpressionException, ParseException{
+
+    public ArrayList<Seat> getSeats() throws XPathExpressionException, ParseException {
         ArrayList<Seat> seats = new ArrayList<>();
         try {
-           XPathExpression expr =
-                    this.xpath.compile("//pm:seats/pm:session");
+            XPathExpression expr
+                    = this.xpath.compile("//pm:seats/pm:session");
             NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-            for (int i = 0; i < nodeList.getLength(); i++){
-                 Node sNode = nodeList.item(i);
-                 Seat seat = new Seat();
-                 if(sNode instanceof Element){
-                    try{
-                    seat.house = sNode.getAttributes().getNamedItem("pm:house").getNodeValue();
-                    seat.seatsNum = Integer.parseInt(sNode.getAttributes().getNamedItem("pm:seats").getNodeValue());
-                    Element fElement = (Element) sNode.getChildNodes();
-                    try{
-                        Element periodElement = (Element)fElement.getElementsByTagName("period").item(0);
-                        seat.from = new DateTime(periodElement.getAttribute("pm:from"),periodElement.getAttribute("pm:from-granularity"));
-                        seat.to = new DateTime(periodElement.getAttribute("pm:till"),periodElement.getAttribute("pm:till-granularity"));
-                    }catch (NullPointerException ex) {
-                        log.info("No period info for some session  for member:" + this.getPartyId()+ "\n" + ex);
-                    }
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node sNode = nodeList.item(i);
+                Seat seat = new Seat();
+                if (sNode instanceof Element) {
+                    try {
+                        seat.house = sNode.getAttributes().getNamedItem("pm:house").getNodeValue();
+                        seat.seatsNum = Integer.parseInt(sNode.getAttributes().getNamedItem("pm:seats").getNodeValue());
+                        Element fElement = (Element) sNode.getChildNodes();
+                        try {
+                            Element periodElement = (Element) fElement.getElementsByTagName("period").item(0);
+                            seat.from = new DateTime(periodElement.getAttribute("pm:from"), periodElement.getAttribute("pm:from-granularity"));
+                            seat.to = new DateTime(periodElement.getAttribute("pm:till"), periodElement.getAttribute("pm:till-granularity"));
+                        } catch (NullPointerException ex) {
+                            log.info("No period info for some session  for member:" + this.getPartyId() + "\n" + ex);
+                        }
                     } catch (NullPointerException ex) {
-                        log.info("No seats for:" +  this.getPartyId()+ "\n" + ex);
+                        log.info("No seats for:" + this.getPartyId() + "\n" + ex);
                     }
-                 }
-                 seats.add(seat);
+                }
+                seats.add(seat);
             }
-        } catch (XPathExpressionException |ParseException ex) {
-            log.error("file path:" + this.getPartyId()+ "\n" + ex);
+        } catch (XPathExpressionException | ParseException ex) {
+            log.error("file path:" + this.getPartyId() + "\n" + ex);
             throw ex;
         }
         return seats;
     }
-    
+
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, ParseException {
         p_PartyDataParser p = new p_PartyDataParser();
         p.init("/Users/Mosi/Desktop/ExPoSe/Data/Cleaned/Parliament/p/nl/nl.p.vvd.xml");

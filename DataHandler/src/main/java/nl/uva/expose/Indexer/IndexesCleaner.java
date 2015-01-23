@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.Indexer;
 
 import java.io.File;
@@ -16,11 +15,12 @@ import org.apache.commons.io.FileUtils;
  * @author Mostafa Dehghani
  */
 public class IndexesCleaner {
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(IndexesCleaner.class.getName());
 
     public IndexesCleaner(String period) {
-    try {
-            String path = configFile.getProperty("INDEXES_PATH")+period;
+        try {
+            String path = configFile.getProperty("INDEXES_PATH") + period;
             File Index = new File(path);
             if (Index.exists()) {
                 FileUtils.deleteDirectory(Index);
@@ -36,9 +36,10 @@ public class IndexesCleaner {
             log.error(ex);
         }
     }
+
     public IndexesCleaner(String period, String indexType) {
-    try {
-            String path = configFile.getProperty("INDEXES_PATH")+period+"/"+indexType;
+        try {
+            String path = configFile.getProperty("INDEXES_PATH") + period + "/" + indexType;
             File Index = new File(path);
             if (Index.exists()) {
                 FileUtils.deleteDirectory(Index);
@@ -51,7 +52,8 @@ public class IndexesCleaner {
             log.error(ex);
         }
     }
+
     public static void main(String[] args) {
-        new IndexesCleaner("20122014");
+        new IndexesCleaner("20062010");
     }
 }

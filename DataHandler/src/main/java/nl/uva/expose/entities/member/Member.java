@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.entities.member;
 
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import nl.uva.expose.entities.DateTime;
  * @author Mostafa Dehghani
  */
 public class Member {
+
     private String mId;
     private String firstName;
     private String lastName;
@@ -27,7 +27,7 @@ public class Member {
     private String bioText;
     private ArrayList<Function> functions;
     private ArrayList<Membership> memberships;
-    
+
     //for Index:
     private String period;
     private StringBuilder speeches = new StringBuilder();
@@ -49,10 +49,10 @@ public class Member {
         this.affiliations = new HashSet<>();
         this.roles = new HashSet<>();
         this.speechTimeFunctions = new HashSet<>();
-        
+
     }
-    
-    public Member(String period, String pmId,String fullName, String firstName, String lastName, String gender, DateTime bDate, String bioText, String speech, String aff, String role, String speechTimeFunc) {
+
+    public Member(String period, String pmId, String fullName, String firstName, String lastName, String gender, DateTime bDate, String bioText, String speech, String aff, String role, String speechTimeFunc) {
         this.mId = pmId;
         this.fullName = fullName;
         this.firstName = firstName;
@@ -60,7 +60,7 @@ public class Member {
         this.gender = gender;
         this.bDate = bDate;
         this.bioText = bioText;
-        this.speeches.append("\n"+speech);
+        this.speeches.append("\n" + speech);
         this.affiliations = new HashSet<>();
         this.affiliations.add(aff);
         this.roles = new HashSet<>();
@@ -77,11 +77,11 @@ public class Member {
     public String getFullName() {
         return fullName;
     }
-    
+
     public String getFirstName() {
         return firstName;
     }
-    
+
     public String getLastName() {
         return lastName;
     }
@@ -117,7 +117,7 @@ public class Member {
     public Integer getSpeechNum() {
         return speechNum;
     }
-    
+
     public HashSet<String> getAffiliations() {
         return affiliations;
     }
@@ -157,7 +157,5 @@ public class Member {
     public void setSpeechTimeFunctions(HashSet<String> speechTimeFunctions) {
         this.speechTimeFunctions = speechTimeFunctions;
     }
-    
-    
-}
 
+}

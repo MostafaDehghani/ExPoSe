@@ -38,14 +38,13 @@ public class d_ProceedingDataParser {
     private XPathFactory xPathfactory;
     private XPath xpath;
     private XPathExpression expr;
-    
 
-    public void init(String uri) throws ParserConfigurationException, SAXException, IOException{
+    public void init(String uri) throws ParserConfigurationException, SAXException, IOException {
         factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         try {
             builder = factory.newDocumentBuilder();
-        }catch (ParserConfigurationException ex) {
+        } catch (ParserConfigurationException ex) {
             log.error(ex);
             throw ex;
         }
@@ -57,7 +56,7 @@ public class d_ProceedingDataParser {
         }
         xPathfactory = XPathFactory.newInstance();
         xpath = xPathfactory.newXPath();
-        xpath.setNamespaceContext(new UniversalNamespaceCache(doc,true));
+        xpath.setNamespaceContext(new UniversalNamespaceCache(doc, true));
     }
 
     public String getDebateId() throws XPathExpressionException {
@@ -163,7 +162,7 @@ public class d_ProceedingDataParser {
         }
         return scenes;
     }
-    
+
     public HashSet<String> getInvolvedMembersId() throws XPathExpressionException {
         HashSet<String> invMemId = new HashSet<>();
         try {
@@ -183,8 +182,7 @@ public class d_ProceedingDataParser {
         }
         return invMemId;
     }
-    
-    
+
     public StringBuilder getAllSpeeches() throws XPathExpressionException {
         StringBuilder allSpeeches = new StringBuilder();
         try {
@@ -202,6 +200,7 @@ public class d_ProceedingDataParser {
         }
         return allSpeeches;
     }
+
     public String getChairmanId() throws XPathExpressionException {
         String chairmanId = null;
         try {
@@ -243,7 +242,7 @@ public class d_ProceedingDataParser {
                         speech.setSpeakerAffiliation("parl");
                     }
                     Element pElements = (Element) sNode.getChildNodes();
-                    NodeList pNodeList  = pElements.getElementsByTagName("p");
+                    NodeList pNodeList = pElements.getElementsByTagName("p");
                     StringBuilder sb = new StringBuilder();
                     for (int j = 0; j < pNodeList.getLength(); j++) {
                         Element pEle = (Element) pNodeList.item(j);
@@ -254,21 +253,28 @@ public class d_ProceedingDataParser {
                     Node parNode = sNode.getParentNode();
                     if (sNode instanceof Element) {
                         Element parElement = (Element) parNode;
-                        if(parNode.getNodeName().equals("stage-direction")){
+                        if (parNode.getNodeName().equals("stage-direction")) {
                             speech.setSceneId(parElement.getAttribute("pm:id"));
-                        }
-                        else if(parNode.getNodeName().equals("scene")){
+                        } else if (parNode.getNodeName().equals("scene")) {
                             speech.setSceneId(parElement.getAttribute("pm:id"));
                         }
                     }
                 }
-                if(speech.getSpeakerAffiliation().equals("") || speech.getSpeakerAffiliation()==null)
+                if (speech.getSpeakerAffiliation().equals("") || speech.getSpeakerAffiliation() == null) {
                     continue;
-                if(speech.getSpeakerAffiliation().equals("parl") || speech.getSpeakerAffiliation().equals("gov"))
+                }
+                if (speech.getSpeakerAffiliation().equals("parl") || speech.getSpeakerAffiliation().equals("gov")) {
                     continue;
-                if(speech.getSpeakerId().equals("") || speech.getSpeakerId()==null)
+                }
+                if (speech.getSpeakerRole().equals("chair") || speech.getSpeakerRole().equals("government")) {
                     continue;
-                speeches.put(speech.getSpeechId(), speech);
+                }
+                if (speech.getSpeakerId().equals("") || speech.getSpeakerId() == null) {
+                    continue;
+                }
+                if (speech.getSpeakerRole().equals("mp")) {
+                    speeches.put(speech.getSpeechId(), speech);
+                }
             }
         } catch (XPathExpressionException ex) {
             log.error("file path:" + this.getDebateId() + "\n" + ex);

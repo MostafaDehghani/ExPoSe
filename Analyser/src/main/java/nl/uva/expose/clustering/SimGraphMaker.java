@@ -142,11 +142,11 @@ public class SimGraphMaker {
             qId = hitDoc.get("ID");
             qText = hitDoc.get("TEXT");
             /////////////////////////////////////////////
-            if(qText.length()> 3500000){ //for "nl.m.02682"
+            if (qText.length() > 3500000) { //for "nl.m.02682"
                 System.err.println("Shrinking long query: " + qId);
                 System.out.println("query length: " + qText.length());
-                qText = qText.substring(0,3500000);
-               
+                qText = qText.substring(0, 3500000);
+
             }
             //////////////////////////////////////////////
             res = this.searchAndReturnResults(qText, qId);

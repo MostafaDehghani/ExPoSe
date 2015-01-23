@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.data;
 
 import java.io.IOException;
@@ -24,36 +23,34 @@ import org.xml.sax.SAXException;
  * @author Mostafa Dehghani
  */
 public class Data {
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Data.class.getName());
-    
+
     public String period;
-    public HashMap<String,Member> members;
-    public HashMap<String,Party> parties;
-    public HashMap<String,Speech> speeches;
-    public HashMap<String,Debate> debates;
+    public HashMap<String, Member> members;
+    public HashMap<String, Party> parties;
+    public HashMap<String, Speech> speeches;
+    public HashMap<String, Debate> debates;
     public Cabinet cabinet;
 
-
-    public Data(String period) throws ParserConfigurationException, SAXException, IOException, ParseException, XPathExpressionException, Exception{
+    public Data(String period) throws ParserConfigurationException, SAXException, IOException, ParseException, XPathExpressionException, Exception {
         try {
             this.debates = new HashMap<>();
             this.members = new HashMap<>();
             this.parties = new HashMap<>();
             this.speeches = new HashMap<>();
             this.period = period;
-            new DataLoader(this,period);
-        } catch (ParserConfigurationException|SAXException|IOException
-                |XPathExpressionException|ParseException ex) {
+            new DataLoader(this, period);
+        } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException | ParseException ex) {
             log.error(ex);
             throw ex;
         }
     }
-    
-        
+
     public static void main(String[] args) throws Exception {
         Data data = new Data("20062010");
-        for(Debate d: data.debates.values()){
-            System.out.println( d.getdId() + "," + d.getDate().toString());
+        for (Debate d : data.debates.values()) {
+            System.out.println(d.getdId() + "," + d.getDate().toString());
         }
 //        System.out.println(data.debates.size());
 //        System.out.println(data.speeches.size());

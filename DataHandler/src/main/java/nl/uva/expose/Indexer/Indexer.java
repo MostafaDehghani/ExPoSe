@@ -51,7 +51,7 @@ public abstract class Indexer {
     public void Indexer(String period, String indexType) throws Exception {
         try {
             log.info("----------------------- INDEXING--------------------------");
-            new IndexesCleaner(period,indexType);
+            new IndexesCleaner(period, indexType);
 
             String indexPath = configFile.getProperty("INDEXES_PATH") + period + "/" + indexType;
 

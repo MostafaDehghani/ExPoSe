@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nl.uva.expose.entities.debate;
 
 import java.util.HashMap;
@@ -17,6 +16,7 @@ import org.apache.log4j.Logger;
  * @author Mostafa Dehghani
  */
 public class Debate {
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Debate.class.getName());
     private String dId = "";
     private String dTopic = "";
@@ -30,30 +30,11 @@ public class Debate {
     private HashSet<String> scenesId = new HashSet<>();
     private String chairmanId = "";
     private StringBuilder allSpeechs = new StringBuilder();
+    private StringBuilder allmpSpeechs = new StringBuilder();
     public HashMap<String, Speech> debSpeeches = new HashMap<>();
-
-    public Debate(String dId, String sessionNum, String dTopic, String dTitle, DateTime date, 
-            HashSet<String> involvedMembersId, HashSet<String> involvedPMembersId , HashSet<String> presentMembersId, 
-            HashSet<String> MembersId, HashSet<String> speechesId, HashSet<String> scenesId, String chairmanId
-            ,StringBuilder allSpeeches) {
-        this.dId = dId;
-        this.dTopic = dTopic;
-        this.dTitle = dTitle;
-        this.date = date;
-        this.involvedMembersId = involvedMembersId;
-        this.involvedPMembersId = involvedPMembersId;
-        this.presentMembersId = presentMembersId;
-        this.speechesId = speechesId;
-        this.scenesId = scenesId;
-        this.chairmanId = chairmanId;
-        this.sessionNum = sessionNum;
-        this.allSpeechs = allSpeeches;
-    }
 
     public Debate() {
     }
-    
-    
 
     public static Logger getLog() {
         return log;
@@ -74,7 +55,7 @@ public class Debate {
     public HashSet<String> getInvolvedMembersId() {
         return involvedMembersId;
     }
-    
+
     public HashSet<String> getInvolvedPMembersId() {
         return involvedPMembersId;
     }
@@ -126,7 +107,7 @@ public class Debate {
     public void setInvolvedMembersId(HashSet<String> involvedMembersId) {
         this.involvedMembersId = involvedMembersId;
     }
-    
+
     public void setInvolvedPMembersId(HashSet<String> involvedPMembersId) {
         this.involvedPMembersId = involvedPMembersId;
     }
@@ -154,5 +135,13 @@ public class Debate {
     public void setAllSpeechs(StringBuilder allSpeechs) {
         this.allSpeechs = allSpeechs;
     }
-    
+
+    public StringBuilder getAllMPSpeechs() {
+        return allmpSpeechs;
+    }
+
+    public void setAllMPSpeechs(StringBuilder allmpSpeechs) {
+        this.allmpSpeechs = allmpSpeechs;
+    }
+
 }

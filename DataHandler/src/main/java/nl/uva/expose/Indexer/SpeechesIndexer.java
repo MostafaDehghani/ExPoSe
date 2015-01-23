@@ -17,7 +17,7 @@ import org.apache.lucene.document.Field;
  *
  * @author Mostafa Dehghani
  */
-public class SpeechesIndexer extends Indexer{
+public class SpeechesIndexer extends Indexer {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SpeechesIndexer.class.getName());
 
@@ -73,6 +73,6 @@ public class SpeechesIndexer extends Indexer{
     }
 
     public static void main(String[] args) throws Exception {
-        SpeechesIndexer si = new SpeechesIndexer("20122014");
+        SpeechesIndexer si = new SpeechesIndexer("20062010");
     }
 }

@@ -6,7 +6,7 @@
 package nl.uva.expose.Indexer;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.AbstractMap;
 import java.util.Map;
 import nl.uva.expose.entities.speech.Speech;
 import org.apache.lucene.analysis.Analyzer;
@@ -18,44 +18,43 @@ import org.apache.lucene.document.Field;
  *
  * @author Mostafa Dehghani
  */
-public class PartiesIndexer extends Indexer {
+public class StatusIndexer extends Indexer {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PartiesIndexer.class.getName());
-    private HashMap<String, StringBuilder> ps;
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StatusIndexer.class.getName());
 
-    public PartiesIndexer(String period) throws Exception {
-        super(period, "p");
+    public StatusIndexer(String period) throws Exception {
+        super(period, "st");
     }
 
     @Override
     protected void docIndexer() throws Exception {
-        ps = new HashMap<>();
         try {
-            for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {
-                Speech s = e.getValue();
-                if (s.getSpeakerAffiliation().equals("") || s.getSpeakerAffiliation() == null) {
-                    continue;
-                }
-                try {
-                    String sAff = s.getSpeakerAffiliation();
-                    StringBuilder sb = new StringBuilder();
-                    if (ps.containsKey(sAff)) {
-                        sb = ps.get(sAff);
-                    }
-                    sb.append(s.getSpeechText()).append("\n");
-                    ps.put(sAff, sb);
-                } catch (NullPointerException ex) {
-                    log.error(ex);
-                    log.error("Error in speach:" + s.getSpeechId());
-                }
-            }
-            for (Map.Entry<String, StringBuilder> e : ps.entrySet()) {
-                this.IndexDoc(e);
-            }
+            this.IndexDoc(this.getAllSpeechByStatus("Coalition"));
+            this.IndexDoc(this.getAllSpeechByStatus("Oposition"));
         } catch (Exception ex) {
             log.error(ex);
             throw ex;
         }
+    }
+
+    private Map.Entry<String, StringBuilder> getAllSpeechByStatus(String status) throws NullPointerException, IOException {
+        StringBuilder allSpeeches = new StringBuilder();
+        Map.Entry<String, StringBuilder> ent = null;
+        for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {
+            Speech s = e.getValue();
+            try {
+                String sAff = s.getSpeakerAffiliation();
+                if (data.cabinet.getStatus(sAff).equals(status)) {
+                    System.out.println(sAff);
+                    allSpeeches.append(s.getSpeechText()).append("\n");
+                }
+                ent = new AbstractMap.SimpleEntry<>(status, allSpeeches);
+            } catch (NullPointerException | IOException ex) {
+                log.error(ex);
+                throw ex;
+            }
+        }
+        return ent;
     }
 
     @Override
@@ -71,11 +70,7 @@ public class PartiesIndexer extends Indexer {
         {
             return;
         }
-        String Id = e.getKey();
-        if (Id == null) {
-            Id = "null";
-        }
-        doc.add(new Field("ID", Id, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS, Field.TermVector.YES));
+        doc.add(new Field("ID", e.getKey(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS, Field.TermVector.YES));
         doc.add(new Field("TEXT", e.getValue().toString(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         try {
             writer.addDocument(doc);
@@ -86,6 +81,6 @@ public class PartiesIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        PartiesIndexer pi = new PartiesIndexer("20062010");
+        StatusIndexer pi = new StatusIndexer("20062010");
     }
 }

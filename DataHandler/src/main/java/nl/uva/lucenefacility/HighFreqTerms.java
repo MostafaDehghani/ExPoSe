@@ -7,8 +7,8 @@ import org.apache.lucene.util.PriorityQueue;
 
 /**
  *
- * @author  Mostafa Dehghani
- * 
+ * @author Mostafa Dehghani
+ *
  * <code>HighFreqTerms</code> class extracts the top n most frequent terms (by
  * document frequency or by total term frequency) from an existing Lucene.
  */
@@ -17,9 +17,10 @@ public class HighFreqTerms {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(HighFreqTerms.class.getName());
     private final TermStats[] EMPTY_STATS = new TermStats[0];
     private IndexReader ireader = null;
-    
+
     /**
-     * Constructor 
+     * Constructor
+     *
      * @param ireader IndexReader instance that determines the target index
      */
     public HighFreqTerms(IndexReader ireader) {
@@ -37,7 +38,7 @@ public class HighFreqTerms {
         TermsEnum te = null;
         try {
             tiq = new TermStatsDFQueue(numTerms);
-            Terms terms = MultiFields.getTerms(ireader,fieldName);
+            Terms terms = MultiFields.getTerms(ireader, fieldName);
             if (terms != null) {
                 te = terms.iterator(te);
                 this.fillQueue(te, tiq, fieldName);
@@ -74,7 +75,7 @@ public class HighFreqTerms {
 //            while (fieldIterator.hasNext()) {
 //                String fieldName = fieldIterator.next();
 //            Terms terms = fields.terms(fieldName);
-            Terms terms = MultiFields.getTerms(ireader,fieldName);
+            Terms terms = MultiFields.getTerms(ireader, fieldName);
             if (terms != null) {
                 te = terms.iterator(te);
                 this.fillQueue(te, tiq, fieldName);
@@ -93,31 +94,36 @@ public class HighFreqTerms {
         }
         return result;
     }
+
     /**
-     * <code>getTotalTF_PerField</code> calculate total term frequency for the given term in the given field of index
+     * <code>getTotalTF_PerField</code> calculate total term frequency for the
+     * given term in the given field of index
+     *
      * @param field name of the index field which is desired
-     * @param term 
-     * @return 
+     * @param term
+     * @return
      */
-    private Long getTotalTF_PerField(String field, BytesRef text){
+    private Long getTotalTF_PerField(String field, BytesRef text) {
         Long TF = 0L;
-            Term term = new Term(field, text);
-            try {
-                TF = this.ireader.totalTermFreq(term);
-            } catch (IOException ex) {
-                log.error(ex);
-            }
-            return TF;
+        Term term = new Term(field, text);
+        try {
+            TF = this.ireader.totalTermFreq(term);
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+        return TF;
     }
-    
+
     /**
-     * 
-     * <code>fillQueue</code> is a function that fill given priority queue with given object 
-     * 
-     * @param termsEnum term enumerator that contains the terms those should be pushed to the given queue
+     *
+     * <code>fillQueue</code> is a function that fill given priority queue with
+     * given object
+     *
+     * @param termsEnum term enumerator that contains the terms those should be
+     * pushed to the given queue
      * @param tiq the priority queue
      * @param field name of the index field which terms belong to
-     * @throws Exception 
+     * @throws Exception
      */
     public void fillQueue(TermsEnum termsEnum, PriorityQueue tiq, String field) throws Exception {
         BytesRef term;
