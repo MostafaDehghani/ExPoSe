@@ -34,14 +34,14 @@ public class Data {
     public Cabinet cabinet;
 
 
-    public Data(String period) throws ParserConfigurationException, SAXException, IOException, ParseException, XPathExpressionException{
+    public Data(String period) throws ParserConfigurationException, SAXException, IOException, ParseException, XPathExpressionException, Exception{
         try {
             this.debates = new HashMap<>();
             this.members = new HashMap<>();
             this.parties = new HashMap<>();
             this.speeches = new HashMap<>();
             this.period = period;
-            new DataLoader(this, period);
+            new DataLoader(this,period);
         } catch (ParserConfigurationException|SAXException|IOException
                 |XPathExpressionException|ParseException ex) {
             log.error(ex);
