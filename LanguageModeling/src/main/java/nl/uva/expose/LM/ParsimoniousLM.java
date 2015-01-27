@@ -1,7 +1,6 @@
 package nl.uva.expose.LM;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 /*
@@ -13,13 +12,16 @@ import java.util.Map.Entry;
  *
  * @author Mostafa Dehghani
  */
-public class ParsimoniousLM extends LanguageModel{
+public final class ParsimoniousLM extends LanguageModel{
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ParsimoniousLM.class.getName());
     private LanguageModel backgroundLM;
     private LanguageModel documentLM;
     private HashMap<String, Double> documentTV;
     private LanguageModel tmpLM;
+    private Double alpha = 0.1D;
+    private Double probThreshold = 0.0005D;
+    private Integer numberOfIttereation =100;
 
     public ParsimoniousLM(LanguageModel documentLM, HashMap<String, Double> documentTV, LanguageModel backgroundLM,
             Double alpha, Double probThreshold, Integer numberOfIttereation) {
@@ -27,7 +29,30 @@ public class ParsimoniousLM extends LanguageModel{
         this.documentLM = documentLM;
         this.documentTV = documentTV;
         this.tmpLM = documentLM;
-        this.generateParsimoniousLanguageModel(alpha, probThreshold, numberOfIttereation);
+        this.alpha = alpha;
+        this.probThreshold = probThreshold;
+        this.numberOfIttereation = numberOfIttereation;
+        this.generateParsimoniousLanguageModel();
+    }
+    
+    public ParsimoniousLM(LanguageModel documentLM, LanguageModel backgroundLM,
+            Double alpha, Double probThreshold, Integer numberOfIttereation) {
+        this.backgroundLM = backgroundLM;
+        this.documentLM = documentLM;
+        this.documentTV = documentLM.LanguageModel;
+        this.tmpLM = documentLM;
+        this.alpha = alpha;
+        this.probThreshold = probThreshold;
+        this.numberOfIttereation = numberOfIttereation;
+        this.generateParsimoniousLanguageModel();
+    }
+    
+     public ParsimoniousLM(LanguageModel documentLM, LanguageModel backgroundLM){
+        this.backgroundLM = backgroundLM;
+        this.documentLM = documentLM;
+        this.documentTV = documentLM.LanguageModel;
+        this.tmpLM = documentLM;
+        this.generateParsimoniousLanguageModel();
     }
 
     private void E_step(Double alpha) {
@@ -59,10 +84,10 @@ public class ParsimoniousLM extends LanguageModel{
         this.tmpLM = new LanguageModel(new HashMap<>(this.LanguageModel));
     }
 
-    public void generateParsimoniousLanguageModel(Double alpha, Double probThreshold, Integer numberOfIttereation) {
-        for (int i = 0; i < numberOfIttereation; i++) {
-            this.E_step(alpha);
-            this.M_step(probThreshold);
+    public void generateParsimoniousLanguageModel() {
+        for (int i = 0; i < this.numberOfIttereation; i++) {
+            this.E_step(this.alpha);
+            this.M_step(this.probThreshold);
         }
     }
 }

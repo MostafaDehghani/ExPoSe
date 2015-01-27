@@ -77,7 +77,9 @@ public class main {
         bw.close();
         
     }
+    
     private static Integer cNum =0;
+    
     public static HashMap<Integer,String>  csvCreator(HashMap<Integer,String> lines, LanguageModel LM, String cName){
         //
         String header = lines.get(0);
