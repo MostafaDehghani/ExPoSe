@@ -18,42 +18,37 @@ import org.apache.lucene.document.Field;
  *
  * @author Mostafa Dehghani
  */
-public class StatusIndexer extends Indexer {
+public class allIndexer extends Indexer {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StatusIndexer.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(allIndexer.class.getName());
 
-    public StatusIndexer(String period) throws Exception {
-        super(period, "st");
+    public allIndexer(String period) throws Exception {
+        super(period, "a");
     }
 
     @Override
     protected void docIndexer() throws Exception {
         try {
-            this.IndexDoc(this.getAllSpeechByStatus("Coalition"));
-            this.IndexDoc(this.getAllSpeechByStatus("Oposition"));
+            this.IndexDoc(this.getAllSpeech());
         } catch (Exception ex) {
             log.error(ex);
             throw ex;
         }
     }
 
-    private Map.Entry<String, StringBuilder> getAllSpeechByStatus(String status) throws NullPointerException, IOException {
+    private StringBuilder getAllSpeech() throws NullPointerException, IOException {
         StringBuilder allSpeeches = new StringBuilder();
-        Map.Entry<String, StringBuilder> ent = null;
         for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {
             Speech s = e.getValue();
             try {
-                String sAff = s.getSpeakerAffiliation();
-                if (data.cabinet.getStatus(sAff).equals(status)) {
                     allSpeeches.append(s.getSpeechText()).append("\n");
-                }
-                ent = new AbstractMap.SimpleEntry<>(status, allSpeeches);
-            } catch (NullPointerException | IOException ex) {
+                    System.out.println(s.getSpeechId());
+            } catch (NullPointerException ex) {
                 log.error(ex);
                 throw ex;
             }
         }
-        return ent;
+        return allSpeeches;
     }
 
     @Override
@@ -63,23 +58,23 @@ public class StatusIndexer extends Indexer {
 
     @Override
     protected void IndexDoc(Object obj) throws Exception {
-        Map.Entry<String, StringBuilder> e = (Map.Entry<String, StringBuilder>) obj;
+        StringBuilder s = (StringBuilder) obj;
         Document doc = new Document();
-        if (e.getValue().toString().split("\\s+").length <= minDocLength) //Filtering small documents
+        if (s.toString().split("\\s+").length <= minDocLength) //Filtering small documents
         {
             return;
         }
-        doc.add(new Field("ID", e.getKey(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS, Field.TermVector.YES));
-        doc.add(new Field("TEXT", e.getValue().toString(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        doc.add(new Field("ID", "all", Field.Store.YES, Field.Index.ANALYZED_NO_NORMS, Field.TermVector.YES));
+        doc.add(new Field("TEXT", s.toString(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         try {
             writer.addDocument(doc);
         } catch (IOException ex) {
             log.error(ex);
         }
-        log.info("Document " + e.getKey() + " has been indexed successfully...");
+        log.info("all speeches have been indexed as a single document");
     }
 
     public static void main(String[] args) throws Exception {
-        StatusIndexer pi = new StatusIndexer("20062010");
+        allIndexer alli = new allIndexer("20062010");
     }
 }

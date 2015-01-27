@@ -3,8 +3,6 @@ package nl.uva.expose.LM;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import nl.uva.expose.genral.LanguageModel;
-import static nl.uva.expose.genral.Tools.sortByValues;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,11 +13,10 @@ import static nl.uva.expose.genral.Tools.sortByValues;
  *
  * @author Mostafa Dehghani
  */
-public class ParsimoniousLM {
+public class ParsimoniousLM extends LanguageModel{
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ParsimoniousLM.class.getName());
     private LanguageModel backgroundLM;
-    public LanguageModel parsimoniousLM;
     private LanguageModel documentLM;
     private HashMap<String, Double> documentTV;
     private LanguageModel tmpLM;
@@ -30,8 +27,7 @@ public class ParsimoniousLM {
         this.documentLM = documentLM;
         this.documentTV = documentTV;
         this.tmpLM = documentLM;
-        this.parsimoniousLM = new LanguageModel();
-        this.parsimoniousLM = this.generateParsimoniousLanguageModel(alpha, probThreshold, numberOfIttereation);
+        this.generateParsimoniousLanguageModel(alpha, probThreshold, numberOfIttereation);
     }
 
     private void E_step(Double alpha) {
@@ -42,9 +38,9 @@ public class ParsimoniousLM {
             }
             Double tf = documentTV.get(e.getKey());
             Double newProb = tf * ((alpha * e.getValue()) / ((alpha * e.getValue()) + ((1 - alpha) * backgoundProb)));
-            this.parsimoniousLM.LanguageModel.put(e.getKey(), newProb);
+            this.LanguageModel.put(e.getKey(), newProb);
         }
-        this.tmpLM = new LanguageModel(new HashMap<>(this.parsimoniousLM.LanguageModel));
+        this.tmpLM = new LanguageModel(new HashMap<>(this.LanguageModel));
     }
 
     private void M_step(Double probThreshold) {
@@ -55,30 +51,18 @@ public class ParsimoniousLM {
         for (Entry<String, Double> e : this.tmpLM.LanguageModel.entrySet()) {
             Double newProb = e.getValue() / summation;
             if (newProb < probThreshold) {
-                this.parsimoniousLM.LanguageModel.remove(e.getKey());
+                this.LanguageModel.remove(e.getKey());
             } else {
-                this.parsimoniousLM.LanguageModel.put(e.getKey(), newProb);
+                this.LanguageModel.put(e.getKey(), newProb);
             }
         }
-        this.tmpLM = new LanguageModel(new HashMap<>(this.parsimoniousLM.LanguageModel));
+        this.tmpLM = new LanguageModel(new HashMap<>(this.LanguageModel));
     }
 
-    public LanguageModel generateParsimoniousLanguageModel(Double alpha, Double probThreshold, Integer numberOfIttereation) {
+    public void generateParsimoniousLanguageModel(Double alpha, Double probThreshold, Integer numberOfIttereation) {
         for (int i = 0; i < numberOfIttereation; i++) {
             this.E_step(alpha);
             this.M_step(probThreshold);
         }
-        return this.parsimoniousLM;
     }
-
-    public List<Entry<String, Double>> getTopK(Integer k) {
-        List<Entry<String, Double>> sorted = sortByValues(parsimoniousLM.LanguageModel, false);
-        return sorted.subList(0, k);
-    }
-
-    public List<Entry<String, Double>> getSorted() {
-        List<Entry<String, Double>> sorted = sortByValues(parsimoniousLM.LanguageModel, false);
-        return sorted;
-    }
-
 }

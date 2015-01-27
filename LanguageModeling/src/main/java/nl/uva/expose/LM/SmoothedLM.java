@@ -5,31 +5,26 @@
  */
 package nl.uva.expose.LM;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import nl.uva.expose.genral.LanguageModel;
-import static nl.uva.expose.genral.Tools.sortByValues;
 
 /**
  *
  * @author Mostafa Dehghani
  */
-public class SmoothedLM {
+public class SmoothedLM  extends LanguageModel {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SmoothedLM.class.getName());
     private LanguageModel backgroundLM;
-    public LanguageModel smoothedLM;
     private LanguageModel documentLM;
 
     public SmoothedLM(LanguageModel documentLM, LanguageModel backgroundLM, Double Lambda) {
         this.backgroundLM = backgroundLM;
         this.documentLM = documentLM;
-        this.smoothedLM = new LanguageModel();
-        this.backgroundLM = this.generateSmoothedLanguageModel(Lambda);
+        this.generateSmoothedLanguageModel(Lambda);
     }
 
-    public LanguageModel generateSmoothedLanguageModel(Double lambda) {
+    public void generateSmoothedLanguageModel(Double lambda) {
         HashSet<String> terms = new HashSet<>();
         terms.addAll(this.documentLM.LanguageModel.keySet());
         terms.addAll(this.backgroundLM.LanguageModel.keySet());
@@ -43,18 +38,8 @@ public class SmoothedLM {
                 documentProb = 0D;
             }
             Double newProb = (lambda * documentProb + ((1 - lambda) * backgoundProb));
-            this.smoothedLM.LanguageModel.put(s, newProb);
+            this.LanguageModel.put(s, newProb);
         }
-        return this.smoothedLM;
     }
 
-    public List<Map.Entry<String, Double>> getTopK(Integer k) {
-        List<Map.Entry<String, Double>> sorted = sortByValues(smoothedLM.LanguageModel, false);
-        return sorted.subList(0, k);
-    }
-
-    public List<Map.Entry<String, Double>> getSorted() {
-        List<Map.Entry<String, Double>> sorted = sortByValues(smoothedLM.LanguageModel, false);
-        return sorted;
-    }
 }

@@ -68,7 +68,7 @@ public class IndexInfo {
      * @param text
      * @return term frequency of given term over all index field
      */
-    public Long getTotalTF_OverAllFields(BytesRef text) throws IOException {
+    public Long getTotalTF_OverAllFields(String text) throws IOException {
         Long totalTF = 0L;
         try {
             Fields fields = MultiFields.getFields(this.ireader);
@@ -104,7 +104,7 @@ public class IndexInfo {
      * @param text
      * @return term frequency of given term over the given field
      */
-    public Long getTotalTF_PerField(String field, BytesRef text) throws IOException {
+    public Long getTotalTF_PerField(String field, String text) throws IOException {
         Long TF = 0L;
         Term term = new Term(field, text);
         try {
@@ -456,7 +456,7 @@ public class IndexInfo {
 //        }
     }
 
-    public HashMap<String, Double> getTermFreqVector(Integer docId, String field) throws IOException {
+    public HashMap<String, Double> getDocTermFreqVector(Integer docId, String field) throws IOException {
         HashMap<String, Double> TV = new HashMap<>();
         try {
             Terms vector = ireader.getTermVector(docId, field);

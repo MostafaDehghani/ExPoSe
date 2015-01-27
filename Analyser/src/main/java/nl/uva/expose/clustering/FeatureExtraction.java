@@ -267,7 +267,7 @@ public class FeatureExtraction {
     }
 
     public static void main(String[] args) throws IOException, ParseException, ParserConfigurationException, SAXException, java.text.ParseException, XPathExpressionException, Exception {
-        FeatureExtraction anal = new FeatureExtraction("20062010");
+        FeatureExtraction anal = new FeatureExtraction("20102012");
         anal.dataEnreachment();
     }
 }

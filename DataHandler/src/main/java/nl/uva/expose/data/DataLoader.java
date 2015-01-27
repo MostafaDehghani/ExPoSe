@@ -191,7 +191,7 @@ public class DataLoader {
         //removing members who did not talk in the period in question
         HashSet<String> mids = new HashSet<>(data.members.keySet());
         for (String mid : mids) {
-            if (activeMem.contains(mid)) {
+            if (!activeMem.contains(mid)) {
                 data.members.remove(mid);
             }
         }

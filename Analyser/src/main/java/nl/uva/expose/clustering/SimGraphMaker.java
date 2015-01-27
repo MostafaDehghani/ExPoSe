@@ -157,9 +157,8 @@ public class SimGraphMaker {
         }
         bw.close();
     }
-
     public static void main(String[] args) throws Exception {
-        SimGraphMaker sgm = new SimGraphMaker("20062010");
+        SimGraphMaker sgm = new SimGraphMaker("20122014");
         sgm.similarityGraphMaker();
     }
 }

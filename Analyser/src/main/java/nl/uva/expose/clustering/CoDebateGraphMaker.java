@@ -94,7 +94,7 @@ public class CoDebateGraphMaker {
     }
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, ParseException, XPathExpressionException {
-        CoDebateGraphMaker cdgk = new CoDebateGraphMaker("20062010");
+        CoDebateGraphMaker cdgk = new CoDebateGraphMaker("20102012");
         cdgk.graphGen();
     }
 }
