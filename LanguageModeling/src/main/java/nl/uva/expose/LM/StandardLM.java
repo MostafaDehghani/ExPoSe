@@ -16,7 +16,7 @@ import org.apache.lucene.index.IndexReader;
  *
  * @author Mostafa Dehghani
  */
-public class StandardLM extends LanguageModel{
+public class StandardLM extends LanguageModel {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StandardLM.class.getName());
     private IndexReader ireader;

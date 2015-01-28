@@ -12,7 +12,7 @@ import java.util.Map.Entry;
  *
  * @author Mostafa Dehghani
  */
-public final class ParsimoniousLM extends LanguageModel{
+public final class ParsimoniousLM extends LanguageModel {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ParsimoniousLM.class.getName());
     private LanguageModel backgroundLM;
@@ -21,7 +21,7 @@ public final class ParsimoniousLM extends LanguageModel{
     private LanguageModel tmpLM;
     private Double alpha = 0.1D;
     private Double probThreshold = 0.0005D;
-    private Integer numberOfIttereation =100;
+    private Integer numberOfIttereation = 100;
 
     public ParsimoniousLM(LanguageModel documentLM, HashMap<String, Double> documentTV, LanguageModel backgroundLM,
             Double alpha, Double probThreshold, Integer numberOfIttereation) {
@@ -34,7 +34,7 @@ public final class ParsimoniousLM extends LanguageModel{
         this.numberOfIttereation = numberOfIttereation;
         this.generateParsimoniousLanguageModel();
     }
-    
+
     public ParsimoniousLM(LanguageModel documentLM, LanguageModel backgroundLM,
             Double alpha, Double probThreshold, Integer numberOfIttereation) {
         this.backgroundLM = backgroundLM;
@@ -46,8 +46,8 @@ public final class ParsimoniousLM extends LanguageModel{
         this.numberOfIttereation = numberOfIttereation;
         this.generateParsimoniousLanguageModel();
     }
-    
-     public ParsimoniousLM(LanguageModel documentLM, LanguageModel backgroundLM){
+
+    public ParsimoniousLM(LanguageModel documentLM, LanguageModel backgroundLM) {
         this.backgroundLM = backgroundLM;
         this.documentLM = documentLM;
         this.documentTV = documentLM.LanguageModel;

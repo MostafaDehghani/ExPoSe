@@ -30,7 +30,7 @@ public class LanguageModel {
     public LanguageModel(HashMap<String, Double> LM) {
         this.LanguageModel = LM;
     }
-    
+
     public static List<Map.Entry<String, Double>> sortByValues(Map<String, Double> unsortMap, final boolean order) {
         List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());
         // Sorting the list based on values
@@ -55,24 +55,24 @@ public class LanguageModel {
 //        return sortedMap;
         return list;
     }
-    
+
     public List<Map.Entry<String, Double>> getTopK(Integer k) {
         List<Map.Entry<String, Double>> sorted = sortByValues(LanguageModel, false);
-        k = k<sorted.size()?k:sorted.size();
+        k = k < sorted.size() ? k : sorted.size();
         return sorted.subList(0, k);
     }
-    
+
     public List<Map.Entry<String, Double>> getNormalizedTopK(Integer k) {
         List<Map.Entry<String, Double>> sorted = sortByValues(LanguageModel, false);
-        List<Map.Entry<String, Double>> newList = new ArrayList<>() ;
-        k = k<sorted.size()?k:sorted.size();
+        List<Map.Entry<String, Double>> newList = new ArrayList<>();
+        k = k < sorted.size() ? k : sorted.size();
         Double summation = 0D;
         for (Map.Entry<String, Double> e : sorted.subList(0, k)) {
             summation += e.getValue();
         }
         for (Map.Entry<String, Double> e : sorted.subList(0, k)) {
             Double newProb = e.getValue() / summation;
-                   newList.add(new AbstractMap.SimpleEntry<>(e.getKey(), newProb));
+            newList.add(new AbstractMap.SimpleEntry<>(e.getKey(), newProb));
         }
         return newList;
     }

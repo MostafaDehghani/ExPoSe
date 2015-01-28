@@ -16,7 +16,7 @@ import org.apache.lucene.index.IndexReader;
  *
  * @author Mostafa Dehghani
  */
-public class CollectionLM extends LanguageModel{
+public class CollectionLM extends LanguageModel {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CollectionLM.class.getName());
     private IndexReader ireader;
@@ -41,7 +41,7 @@ public class CollectionLM extends LanguageModel{
             HashSet<String> allTerms = this.iInfo.getAllTerms(this.field);
             Long cLength = this.iInfo.getNumOfAllTerms(this.field);
             for (String term : allTerms) {
-                Double prob = this.iInfo.getTotalTF_PerField(this.field, term).doubleValue()/cLength;
+                Double prob = this.iInfo.getTotalTF_PerField(this.field, term).doubleValue() / cLength;
                 tv.put(term, prob);
             }
         } catch (IOException ex) {

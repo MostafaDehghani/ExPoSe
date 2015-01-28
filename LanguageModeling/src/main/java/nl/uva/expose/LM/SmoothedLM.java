@@ -12,7 +12,7 @@ import java.util.HashSet;
  *
  * @author Mostafa Dehghani
  */
-public class SmoothedLM  extends LanguageModel {
+public class SmoothedLM extends LanguageModel {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SmoothedLM.class.getName());
     private LanguageModel backgroundLM;
