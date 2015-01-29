@@ -18,40 +18,36 @@ import org.apache.lucene.document.Field;
  *
  * @author Mostafa Dehghani
  */
-public class StatusIndexer extends Indexer {
+public class allIndexer extends Indexer {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StatusIndexer.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(allIndexer.class.getName());
 
-    public StatusIndexer(String period) throws Exception {
-        super(period, "st");
+    public allIndexer(String period) throws Exception {
+        super(period, "a");
     }
 
     @Override
     protected void docIndexer() throws Exception {
         try {
             Map.Entry<String, StringBuilder> e;
-            e = this.getAllSpeechByStatus("Coalition");
+            e = this.getAllSpeech();
             this.IndexDoc(e);
-            e = this.getAllSpeechByStatus("Oposition");
-            this.IndexDoc(e);
+
         } catch (Exception ex) {
             log.error(ex);
             throw ex;
         }
     }
 
-    private  Map.Entry<String, StringBuilder>  getAllSpeechByStatus(String status) throws NullPointerException, IOException {
+    private  Map.Entry<String, StringBuilder>  getAllSpeech() throws NullPointerException, IOException {
         StringBuilder allSpeeches = new StringBuilder();
         Map.Entry<String, StringBuilder> ent = null;
         for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {
             Speech s = e.getValue();
             try {
-                String sAff = s.getSpeakerAffiliation();
-                if (data.cabinet.getStatus(sAff).equals(status)) {
-                    allSpeeches.append(s.getSpeechText()).append("\n");
-                }
-                ent = new AbstractMap.SimpleEntry<>(status, allSpeeches);
-            } catch (NullPointerException | IOException ex) {
+                allSpeeches.append(s.getSpeechText()).append("\n");
+                ent = new AbstractMap.SimpleEntry<>("all", allSpeeches);
+            } catch (NullPointerException ex) {
                 log.error(ex);
                 throw ex;
             }
@@ -83,6 +79,6 @@ public class StatusIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        StatusIndexer sti = new StatusIndexer("20062010");
+        allIndexer ai = new allIndexer("20062010");
     }
 }
