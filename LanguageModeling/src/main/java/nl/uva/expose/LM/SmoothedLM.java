@@ -17,11 +17,19 @@ public class SmoothedLM extends LanguageModel {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SmoothedLM.class.getName());
     private LanguageModel backgroundLM;
     private LanguageModel documentLM;
+    private Double lambda = 0.7D;
 
-    public SmoothedLM(LanguageModel documentLM, LanguageModel backgroundLM, Double Lambda) {
+    public SmoothedLM(LanguageModel documentLM, LanguageModel backgroundLM, Double lambda) {
         this.backgroundLM = backgroundLM;
         this.documentLM = documentLM;
-        this.generateSmoothedLanguageModel(Lambda);
+        this.lambda = lambda;
+        this.generateSmoothedLanguageModel(this.lambda);
+    }
+    
+    public SmoothedLM(LanguageModel documentLM, LanguageModel backgroundLM) {
+        this.backgroundLM = backgroundLM;
+        this.documentLM = documentLM;
+        this.generateSmoothedLanguageModel(this.lambda);
     }
 
     public void generateSmoothedLanguageModel(Double lambda) {

@@ -57,7 +57,13 @@ public final class ParsimoniousLM extends LanguageModel {
 
     private void E_step(Double alpha) {
         for (Entry<String, Double> e : this.tmpLM.LanguageModel.entrySet()) {
-            Double backgoundProb = this.backgroundLM.LanguageModel.get(e.getKey());
+            Double backgoundProb = null;
+//            try{
+                backgoundProb = this.backgroundLM.LanguageModel.get(e.getKey());
+//            }catch(Exception ex){
+//                System.out.println(ex);
+//                System.exit(0);
+//            }
             if (backgoundProb == null) {
                 backgoundProb = 0D;
             }

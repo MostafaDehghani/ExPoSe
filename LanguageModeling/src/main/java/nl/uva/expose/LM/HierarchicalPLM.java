@@ -27,9 +27,9 @@ public class HierarchicalPLM {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(HierarchicalPLM.class.getName());
     private String period;
-    private IndexReader miReader;
-    private IndexReader piReader;
-    private IndexReader statiReader;
+    public IndexReader miReader;
+    public IndexReader piReader;
+    public IndexReader statiReader;
     private IndexInfo miInfo;
     private IndexInfo piInfo;
     private IndexInfo statiInfo;
@@ -128,7 +128,7 @@ public class HierarchicalPLM {
         return pPLM;
     }
 
-    public LanguageModel getStatSpecialPLM(String status) throws IOException {
+    public LanguageModel getStatDoubleSidedPLM(String status) throws IOException {
         LanguageModel sPLM = this.getStatPLM(status);
         LanguageModel newLM = null;
         for (int i = 0; i < this.miReader.numDocs(); i++) {
@@ -140,18 +140,56 @@ public class HierarchicalPLM {
         }
         return newLM;
     }
+    public LanguageModel getStatDoubleSidedPLM2(String status) throws IOException {
+        LanguageModel sPLM = this.getStatPLM(status);
+        LanguageModel newLM = null;
+        for (int i = 0; i < this.piReader.numDocs(); i++) {
+            String pid = this.piReader.document(i).get("ID");
+            if (this.getPartyStatus(pid).equals(status)) {
+                newLM = new ParsimoniousLM(sPLM, this.getPartyPLM(pid));
+                sPLM = newLM;
+            }
+        }
+        return newLM;
+    }
+    
+    public LanguageModel getStatDoubleSidedPLM3(String status) throws IOException {
+        LanguageModel sPLM = this.getStatPLM(status);
+        LanguageModel newLM = null;
+        for (int i = 0; i < this.piReader.numDocs(); i++) {
+            String pid = this.piReader.document(i).get("ID");
+            if (this.getPartyStatus(pid).equals(status)) {
+                newLM = new ParsimoniousLM(sPLM, this.getPartyDoubleSidedPLM(pid));
+                sPLM = newLM;
+            }
+        }
+        return newLM;
+    }
+    
+    public LanguageModel getPartyDoubleSidedPLM(String party) throws IOException {
+        LanguageModel pPLM = this.getPartyPLM(party);
+        LanguageModel newLM = null;
+        for (int i = 0; i < this.miReader.numDocs(); i++) {
+            if (this.getMemParty(i).equals(party)) {
+                String mid = this.miReader.document(i).get("ID");
+                newLM = new ParsimoniousLM(pPLM, this.getMemPLM(mid));
+                pPLM = newLM;
+            }
+        }
+        return newLM;
+    }
 
-    private String getMemStatus(Integer memIndexId) throws IOException {
+    public String getMemStatus(Integer memIndexId) throws IOException {
         String aff = "";
         HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
         for (String s : affiliations) {
             aff += s + " ";
         }
         String status = this.cabinet.getStatus(aff);
-        Integer affNum = affiliations.size();
-        if (affNum != 1) {
-            System.err.println(affNum + " --- " + memIndexId + ": " + status);
-        }
+//        Integer affNum = affiliations.size();
+//        if (affNum != 1) {
+//            System.err.println(affNum + " --- " + memIndexId + ": " + status);
+//        }
         return status;
     }
 
@@ -163,9 +201,11 @@ public class HierarchicalPLM {
     private String getMemParty(Integer memIndexId) throws IOException {
         String aff = "";
         HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
+        if(affiliations.contains("nl.p.lidbontes"))
+            return "nl.p.lidbontes";
         for (String s : affiliations) {
             aff = s;
-            break;
+//            break;
         }
         if (affiliations.size() > 1) {
             System.err.println("More than one affiliation: " + affiliations.toString() + " --> " + aff);
@@ -173,4 +213,10 @@ public class HierarchicalPLM {
         return aff.trim();
     }
 
+//    
+//    public static void main(String[] args) throws Exception {
+//        HierarchicalPLM h = new HierarchicalPLM("20122014");
+//        LanguageModel l = h.getPartyDoubleSidedPLM();
+//        System.out.println(l.LanguageModel.size());
+//    }
 }

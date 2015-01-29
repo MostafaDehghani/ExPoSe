@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import nl.uva.expose.LM.HierarchicalPLM;
 import static nl.uva.expose.settings.Config.configFile;
 import nl.uva.lucenefacility.IndexInfo;
 import org.apache.commons.lang.StringUtils;
@@ -28,35 +27,46 @@ public class main {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
 
     public static void main(String[] args) throws IOException, Exception {
-       main3();
+       main1();
 
     }
 
     
     public static void main3() throws Exception{
         HierarchicalPLM hplm = new HierarchicalPLM("20062010");
-        LanguageModel newOpoPLM = hplm.getStatSpecialPLM("Oposition");
-        LanguageModel newCoaPLM = hplm.getStatSpecialPLM("Coalition");
+        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
+        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
         Divergence d1 = new Divergence(newCoaPLM, newCoaPLM);
         Divergence d2 = new Divergence(newOpoPLM, newCoaPLM);
         System.out.println(d1.getJsdScore());
         System.out.println(d1.getKldScore());
         System.out.println(d2.getJsdScore());
         System.out.println(d2.getKldScore());
-        
     }
     
     public static void main1() throws Exception {
-        HierarchicalPLM hplm = new HierarchicalPLM("20062010");
+        HierarchicalPLM hplm = new HierarchicalPLM("20122014");
         LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
-        LanguageModel newOpoPLM = hplm.getStatSpecialPLM("Oposition");
+        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
+        LanguageModel newOpoPLM2 = hplm.getStatDoubleSidedPLM2("Oposition");
+        LanguageModel newOpoPLM3 = hplm.getStatDoubleSidedPLM3("Oposition");
+        LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
+        LanguageModel CoaSLM = hplm.getStatSLM("Coalition");
         LanguageModel oldCoaPLM = hplm.getStatPLM("Coalition");
-        LanguageModel newCoaPLM = hplm.getStatSpecialPLM("Coalition");
+        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
+        LanguageModel newCoaPLM2 = hplm.getStatDoubleSidedPLM2("Coalition");
+        LanguageModel newCoaPLM3 = hplm.getStatDoubleSidedPLM3("Coalition");
         HashMap<Integer, String> lines = new HashMap<>();
-        lines = csvCreator(lines, oldOpoPLM, "oldOpoPLM");
-        lines = csvCreator(lines, newOpoPLM, "newOpoPLM");
-        lines = csvCreator(lines, oldCoaPLM, "oldCoaPLM");
-        lines = csvCreator(lines, newCoaPLM, "newCoaPLM");
+        lines = csvCreator(lines, OpoSLM, "OpoSLM");
+        lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
+        lines = csvCreator(lines, newOpoPLM3, "OpoDSPLM3");
+        lines = csvCreator(lines, newOpoPLM2, "OpoDSPLM2");
+        lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
+        lines = csvCreator(lines, CoaSLM, "CoaSLM");
+        lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
+        lines = csvCreator(lines, newCoaPLM3, "CoaDSPLM3");
+        lines = csvCreator(lines, newCoaPLM2, "CoaDSPLM2");
+        lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms.csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");
@@ -77,7 +87,7 @@ public class main {
         lines.put(0, header);
         //
         Integer lineNum = 1;
-        for (Entry<String, Double> e : LM.getSorted()) {
+        for (Entry<String, Double> e : LM.getTopK(1000)) {
             String line = lines.get(lineNum);
             if (cNum == 0) {
                 line = "\"" + e.getKey() + "\"" + ":" + e.getValue();
@@ -149,5 +159,6 @@ public class main {
         }
         bw.close();
     }
+    
 }
 
