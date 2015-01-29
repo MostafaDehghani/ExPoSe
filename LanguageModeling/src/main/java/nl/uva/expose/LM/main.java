@@ -48,24 +48,16 @@ public class main {
         HierarchicalPLM hplm = new HierarchicalPLM("20122014");
         LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
         LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
-        LanguageModel newOpoPLM2 = hplm.getStatDoubleSidedPLM2("Oposition");
-        LanguageModel newOpoPLM3 = hplm.getStatDoubleSidedPLM3("Oposition");
         LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
         LanguageModel CoaSLM = hplm.getStatSLM("Coalition");
         LanguageModel oldCoaPLM = hplm.getStatPLM("Coalition");
         LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
-        LanguageModel newCoaPLM2 = hplm.getStatDoubleSidedPLM2("Coalition");
-        LanguageModel newCoaPLM3 = hplm.getStatDoubleSidedPLM3("Coalition");
         HashMap<Integer, String> lines = new HashMap<>();
         lines = csvCreator(lines, OpoSLM, "OpoSLM");
         lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
-        lines = csvCreator(lines, newOpoPLM3, "OpoDSPLM3");
-        lines = csvCreator(lines, newOpoPLM2, "OpoDSPLM2");
         lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
         lines = csvCreator(lines, CoaSLM, "CoaSLM");
         lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
-        lines = csvCreator(lines, newCoaPLM3, "CoaDSPLM3");
-        lines = csvCreator(lines, newCoaPLM2, "CoaDSPLM2");
         lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms.csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {

@@ -1,8 +1,13 @@
 package nl.uva.lucenefacility;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.AnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;
@@ -11,16 +16,21 @@ import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
-import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.PorterStemFilter;
+import org.apache.lucene.analysis.miscellaneous.StemmerOverrideFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterFilter;
 import org.apache.lucene.analysis.nl.DutchAnalyzer;
 import org.apache.lucene.analysis.nl.DutchStemFilter;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.analysis.util.CharTokenizer;
+import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
+import org.apache.lucene.util.fst.FST;
+import org.tartarus.snowball.SnowballProgram;
+import org.tartarus.snowball.ext.DutchStemmer;
 
 /**
  *
@@ -36,7 +46,7 @@ public class MyAnalyzer {
     private Boolean stopwordRemooving;
 
     public MyAnalyzer(Boolean steming, ArrayList<String> stopCollection) { //In case of stopword removing
-        stopList = new CharArraySet(Version.LUCENE_CURRENT, stopCollection, true);
+        stopList = new CharArraySet(stopCollection, true);
         this.stopwordRemooving = true;
         this.steming = steming;
     }
@@ -52,19 +62,19 @@ public class MyAnalyzer {
         return new AnalyzerWrapper() {
             @Override
             protected Analyzer getWrappedAnalyzer(String string) {
-                return new WhitespaceAnalyzer(Version.LUCENE_CURRENT);
+                return new WhitespaceAnalyzer();
             }
 
             protected Analyzer.TokenStreamComponents creatComponents(
                     String fieldName, final Reader reader) {
-                Tokenizer tokenizer = new CharTokenizer(Version.LUCENE_CURRENT, reader) {
+                Tokenizer tokenizer = new CharTokenizer(reader) {
 
                     @Override
                     protected boolean isTokenChar(final int character) {
                         return delimiter != character;
                     }
                 };
-                TokenStream filter = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenizer);
+                TokenStream filter = new LowerCaseFilter(tokenizer);
                 return new TokenStreamComponents(tokenizer, filter);
             }
 
@@ -80,17 +90,16 @@ public class MyAnalyzer {
 
             @Override
             protected Analyzer getWrappedAnalyzer(String string) {
-                return new StandardAnalyzer(Version.LUCENE_CURRENT);
+                return new StandardAnalyzer();
             }
 
             @Override
             protected Analyzer.TokenStreamComponents wrapComponents(
                     String fieldName, Analyzer.TokenStreamComponents tsc) {
-                TokenStream tokenStream = new WordDelimiterFilter(Version.LUCENE_CURRENT, new StandardFilter(
-                        Version.LUCENE_CURRENT, tsc.getTokenStream()), wordDelimiterConfig, null);
+                TokenStream tokenStream = new WordDelimiterFilter(new StandardFilter(
+                        tsc.getTokenStream()), wordDelimiterConfig, null);
 
-                tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT,
-                        tokenStream);
+                tokenStream = new LowerCaseFilter(tokenStream);
 
                 return new StandardAnalyzer.TokenStreamComponents(
                         tsc.getTokenizer(), tokenStream);
@@ -104,15 +113,15 @@ public class MyAnalyzer {
             return new AnalyzerWrapper() {
                 @Override
                 protected Analyzer getWrappedAnalyzer(String string) {
-                    return new StandardAnalyzer(Version.LUCENE_CURRENT);
+                    return new StandardAnalyzer();
                 }
 
                 @Override
                 protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
-                    TokenStream tokenStream = new StandardFilter(Version.LUCENE_CURRENT, tsc.getTokenStream());
-                    tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenStream);
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
                     tokenStream = new PorterStemFilter(tokenStream);
-                    tokenStream = new StopFilter(Version.LUCENE_CURRENT, tokenStream, stopList);
+                    tokenStream = new StopFilter(tokenStream, stopList);
                     return new StandardAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };
@@ -120,15 +129,26 @@ public class MyAnalyzer {
             return new AnalyzerWrapper() {
                 @Override
                 protected Analyzer getWrappedAnalyzer(String string) {
-                    return new StandardAnalyzer(Version.LUCENE_CURRENT);
+                    return new StandardAnalyzer();
                 }
 
                 @Override
                 protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
 
-                    TokenStream tokenStream = new StandardFilter(Version.LUCENE_CURRENT, tsc.getTokenStream());
-                    tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenStream);
-                    tokenStream = new StopFilter(Version.LUCENE_CURRENT, tokenStream, stopList);
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+                    tokenStream = new StopFilter(tokenStream, stopList);
+
+                     //Empty dictionary for stemming:
+                    StemmerOverrideFilter.StemmerOverrideMap map = null;
+                    StemmerOverrideFilter.Builder sofb = new StemmerOverrideFilter.Builder();
+                    try {
+                         map = sofb.build();
+                    } catch (IOException ex) {
+                        log.error(ex);
+                    }
+                    tokenStream = new StemmerOverrideFilter(tokenStream,map); 
+   
                     return new StandardAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };
@@ -136,20 +156,49 @@ public class MyAnalyzer {
             return new AnalyzerWrapper() {
                 @Override
                 protected Analyzer getWrappedAnalyzer(String string) {
-                    return new StandardAnalyzer(Version.LUCENE_CURRENT);
+                    return new StandardAnalyzer();
                 }
 
                 @Override
                 protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
 
-                    TokenStream tokenStream = new StandardFilter(Version.LUCENE_CURRENT, tsc.getTokenStream());
-                    tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenStream);
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
                     tokenStream = new PorterStemFilter(tokenStream);
+                    //Empty list for stopwords:
+                    tokenStream = new StopFilter(tokenStream, new CharArraySet(new ArrayList<String>(), true));
                     return new StandardAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };
         }
-        return new StandardAnalyzer(Version.LUCENE_CURRENT);
+        //return new StandardAnalyzer();
+         return new AnalyzerWrapper() {
+                @Override
+                protected Analyzer getWrappedAnalyzer(String string) {
+                    return new StandardAnalyzer();
+                }
+
+                @Override
+                protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
+
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+                    //Empty list for stopwords:
+                    tokenStream = new StopFilter(tokenStream, new CharArraySet(new ArrayList<String>(), true));
+                    
+                     //Empty dictionary for stemming:
+                    StemmerOverrideFilter.StemmerOverrideMap map = null;
+                    StemmerOverrideFilter.Builder sofb = new StemmerOverrideFilter.Builder();
+                    try {
+                         map = sofb.build();
+                    } catch (IOException ex) {
+                        log.error(ex);
+                    }
+                    tokenStream = new StemmerOverrideFilter(tokenStream,map); 
+   
+                    return new StandardAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
+                }
+            };
     }
 
     public Analyzer MyDutchAnalizer() {
@@ -157,15 +206,16 @@ public class MyAnalyzer {
             return new AnalyzerWrapper() {
                 @Override
                 protected Analyzer getWrappedAnalyzer(String string) {
-                    return new DutchAnalyzer(Version.LUCENE_CURRENT);
+                    return new DutchAnalyzer();
                 }
 
                 @Override
                 protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
-                    TokenStream tokenStream = new StandardFilter(Version.LUCENE_CURRENT, tsc.getTokenStream());
-                    tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenStream);
-                    tokenStream = new DutchStemFilter(tokenStream);
-                    tokenStream = new StopFilter(Version.LUCENE_CURRENT, tokenStream, stopList);
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+//                    tokenStream = new DutchStemFilter(tokenStream);
+                    tokenStream = new SnowballFilter(tokenStream, new DutchStemmer());
+                    tokenStream = new StopFilter(tokenStream, stopList);
                     return new DutchAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };
@@ -173,15 +223,26 @@ public class MyAnalyzer {
             return new AnalyzerWrapper() {
                 @Override
                 protected Analyzer getWrappedAnalyzer(String string) {
-                    return new DutchAnalyzer(Version.LUCENE_CURRENT);
+                    return new DutchAnalyzer();
                 }
 
                 @Override
                 protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
 
-                    TokenStream tokenStream = new StandardFilter(Version.LUCENE_CURRENT, tsc.getTokenStream());
-                    tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenStream);
-                    tokenStream = new StopFilter(Version.LUCENE_CURRENT, tokenStream, stopList);
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+                    tokenStream = new StopFilter(tokenStream, stopList);
+                    
+                     //Empty dictionary for stemming:
+                    StemmerOverrideFilter.StemmerOverrideMap map = null;
+                    StemmerOverrideFilter.Builder sofb = new StemmerOverrideFilter.Builder();
+                    try {
+                         map = sofb.build();
+                    } catch (IOException ex) {
+                        log.error(ex);
+                    }
+                    tokenStream = new StemmerOverrideFilter(tokenStream,map); 
+   
                     return new DutchAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };
@@ -189,24 +250,53 @@ public class MyAnalyzer {
             return new AnalyzerWrapper() {
                 @Override
                 protected Analyzer getWrappedAnalyzer(String string) {
-                    return new DutchAnalyzer(Version.LUCENE_CURRENT);
+                    return new DutchAnalyzer();
                 }
 
                 @Override
                 protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
 
-                    TokenStream tokenStream = new StandardFilter(Version.LUCENE_CURRENT, tsc.getTokenStream());
-                    tokenStream = new LowerCaseFilter(Version.LUCENE_CURRENT, tokenStream);
-                    tokenStream = new DutchStemFilter(tokenStream);
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+                    tokenStream = new SnowballFilter(tokenStream, new DutchStemmer());
+                    //Empty list for stopwords:
+                    tokenStream = new StopFilter(tokenStream, new CharArraySet(new ArrayList<String>(), true));
+   
                     return new DutchAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };
         }
-        return new DutchAnalyzer(Version.LUCENE_CURRENT);
+        //return new DutchAnalyzer();
+        return new AnalyzerWrapper() {
+                @Override
+                protected Analyzer getWrappedAnalyzer(String string) {
+                    return new DutchAnalyzer();
+                }
+
+                @Override
+                protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+                    //Empty list for stopwords:
+                    tokenStream = new StopFilter(tokenStream, new CharArraySet(new ArrayList<String>(), true));
+                    
+                     //Empty dictionary for stemming:
+                    StemmerOverrideFilter.StemmerOverrideMap map = null;
+                    StemmerOverrideFilter.Builder sofb = new StemmerOverrideFilter.Builder();
+                    try {
+                         map = sofb.build();
+                    } catch (IOException ex) {
+                        log.error(ex);
+                    }
+                    tokenStream = new StemmerOverrideFilter(tokenStream,map); 
+                    
+                    return new DutchAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
+                }
+            };
     }
 
     public Analyzer getAnalyzer(String Language) throws FileNotFoundException {
-        Analyzer analyzer = new SimpleAnalyzer(Version.LUCENE_CURRENT);
+        Analyzer analyzer = new SimpleAnalyzer();
         if (Language.equalsIgnoreCase("EN")) {
             analyzer = MyEnglishAnalizer();
         } else if (Language.equalsIgnoreCase("NL")) {

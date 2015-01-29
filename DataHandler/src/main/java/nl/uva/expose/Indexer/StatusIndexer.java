@@ -80,6 +80,6 @@ public class StatusIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        StatusIndexer pi = new StatusIndexer("20062010");
+        StatusIndexer sti = new StatusIndexer("20062010");
     }
 }

@@ -127,35 +127,17 @@ public class HierarchicalPLM {
         }
         return pPLM;
     }
-
+    
     public LanguageModel getStatDoubleSidedPLM(String status) throws IOException {
         LanguageModel sPLM = this.getStatPLM(status);
         LanguageModel newLM = null;
-        for (int i = 0; i < this.miReader.numDocs(); i++) {
-            if (this.getMemStatus(i).equals(status)) {
-                String mid = this.miReader.document(i).get("ID");
-                newLM = new ParsimoniousLM(sPLM, this.getMemPLM(mid));
-                sPLM = newLM;
-            }
-        }
-        return newLM;
-    }
-    public LanguageModel getStatDoubleSidedPLM2(String status) throws IOException {
-        LanguageModel sPLM = this.getStatPLM(status);
-        LanguageModel newLM = null;
-        for (int i = 0; i < this.piReader.numDocs(); i++) {
-            String pid = this.piReader.document(i).get("ID");
-            if (this.getPartyStatus(pid).equals(status)) {
-                newLM = new ParsimoniousLM(sPLM, this.getPartyPLM(pid));
-                sPLM = newLM;
-            }
-        }
-        return newLM;
-    }
-    
-    public LanguageModel getStatDoubleSidedPLM3(String status) throws IOException {
-        LanguageModel sPLM = this.getStatPLM(status);
-        LanguageModel newLM = null;
+//        for (int i = 0; i < this.miReader.numDocs(); i++) {
+//            if (this.getMemStatus(i).equals(status)) {
+//                String mid = this.miReader.document(i).get("ID");
+//                newLM = new ParsimoniousLM(sPLM, this.getMemPLM(mid));
+//                sPLM = newLM;
+//            }
+//        }
         for (int i = 0; i < this.piReader.numDocs(); i++) {
             String pid = this.piReader.document(i).get("ID");
             if (this.getPartyStatus(pid).equals(status)) {
@@ -164,6 +146,7 @@ public class HierarchicalPLM {
             }
         }
         return newLM;
+
     }
     
     public LanguageModel getPartyDoubleSidedPLM(String party) throws IOException {
