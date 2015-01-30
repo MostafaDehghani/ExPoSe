@@ -73,6 +73,6 @@ public class SpeechesIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        SpeechesIndexer si = new SpeechesIndexer("20062010");
+        SpeechesIndexer si = new SpeechesIndexer("20122014");
     }
 }

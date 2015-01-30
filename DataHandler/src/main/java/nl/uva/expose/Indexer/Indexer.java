@@ -67,36 +67,36 @@ public abstract class Indexer {
             this.writer.commit();
             this.writer.close();
             analyzer_1.close();
-            prfWrapper_1.close();
+//            prfWrapper_1.close();
             log.info("-------------------------------------------------");
             log.info("Index without common words removing is created successfully...");
             log.info("-------------------------------------------------");
             //
 
-            if (commonWordsRemoving) {
-                String tmpIndexPath = configFile.getProperty("INDEXES_PATH") + period + "/tmp";
-                FileUtils.forceMkdir(new File(tmpIndexPath));
-                IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(indexPath)));
-                IndexInfo iInfo = new IndexInfo(ireader);
-                ArrayList<String> commonWs = iInfo.getTopTerms_TF("TEXT", this.commonWordNum);
-                MyAnalyzer myAnalyzer_Stoplist = new MyAnalyzer(stemming, commonWs);
-                Analyzer analyzer_2 = myAnalyzer_Stoplist.getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
-                PerFieldAnalyzerWrapper prfWrapper_2 = new PerFieldAnalyzerWrapper(analyzer_2, analyzerMap);
-                IndexWriterConfig irc_2 = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper_2);
-                this.writer = new IndexWriter(new SimpleFSDirectory(new File(tmpIndexPath)), irc_2);
-                this.docIndexer();
-                this.writer.commit();
-                this.writer.close();
-                analyzer_2.close();
-                prfWrapper_2.close();
-                FileUtils.deleteDirectory(new File(indexPath));
-                File index = new File(tmpIndexPath);
-                File newIndex = new File(indexPath);
-                index.renameTo(newIndex);
-                log.info("-------------------------------------------------");
-                log.info("Index with common words removing is created successfully...");
-                log.info("-------------------------------------------------");
-            }
+//            if (commonWordsRemoving) {
+//                String tmpIndexPath = configFile.getProperty("INDEXES_PATH") + period + "/tmp";
+//                FileUtils.forceMkdir(new File(tmpIndexPath));
+//                IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(indexPath)));
+//                IndexInfo iInfo = new IndexInfo(ireader);
+//                ArrayList<String> commonWs = iInfo.getTopTerms_TF("TEXT", this.commonWordNum);
+//                MyAnalyzer myAnalyzer_Stoplist = new MyAnalyzer(stemming, commonWs);
+//                Analyzer analyzer_2 = myAnalyzer_Stoplist.getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
+//                PerFieldAnalyzerWrapper prfWrapper_2 = new PerFieldAnalyzerWrapper(analyzer_2, analyzerMap);
+//                IndexWriterConfig irc_2 = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper_2);
+//                this.writer = new IndexWriter(new SimpleFSDirectory(new File(tmpIndexPath)), irc_2);
+//                this.docIndexer();
+//                this.writer.commit();
+//                this.writer.close();
+//                analyzer_2.close();
+//                prfWrapper_2.close();
+//                FileUtils.deleteDirectory(new File(indexPath));
+//                File index = new File(tmpIndexPath);
+//                File newIndex = new File(indexPath);
+//                index.renameTo(newIndex);
+//                log.info("-------------------------------------------------");
+//                log.info("Index with common words removing is created successfully...");
+//                log.info("-------------------------------------------------");
+//            }
         } catch (Exception ex) {
             log.error(ex);
             throw ex;
