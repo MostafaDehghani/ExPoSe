@@ -83,6 +83,6 @@ public class StatusIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        StatusIndexer sti = new StatusIndexer("20122014");
+        StatusIndexer sti = new StatusIndexer("20062010");
     }
 }

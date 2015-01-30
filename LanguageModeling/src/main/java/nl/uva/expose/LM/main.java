@@ -31,21 +31,10 @@ public class main {
 
     }
 
-    
-    public static void main3() throws Exception{
-        HierarchicalPLM hplm = new HierarchicalPLM("20062010");
-        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
-        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
-        Divergence d1 = new Divergence(newCoaPLM, newCoaPLM);
-        Divergence d2 = new Divergence(newOpoPLM, newCoaPLM);
-        System.out.println(d1.getJsdScore());
-        System.out.println(d1.getKldScore());
-        System.out.println(d2.getJsdScore());
-        System.out.println(d2.getKldScore());
-    }
+
     
     public static void main1() throws Exception {
-        HierarchicalPLM hplm = new HierarchicalPLM("20122014");
+        DSPLM hplm = new DSPLM("20102012");
         LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
         LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
         LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
@@ -150,6 +139,18 @@ public class main {
             bw.write(e.getValue() + "\n");
         }
         bw.close();
+    }
+        
+    public static void main3() throws Exception{
+        DSPLM hplm = new DSPLM("20102012");
+        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
+        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
+        Divergence d1 = new Divergence(newCoaPLM, newCoaPLM);
+        Divergence d2 = new Divergence(newOpoPLM, newCoaPLM);
+        System.out.println(d1.getJsdScore());
+        System.out.println(d1.getKldScore());
+        System.out.println(d2.getJsdScore());
+        System.out.println(d2.getKldScore());
     }
     
 }

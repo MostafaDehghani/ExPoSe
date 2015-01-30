@@ -111,6 +111,6 @@ public class MemberIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        MemberIndexer mi = new MemberIndexer("20122014");
+        MemberIndexer mi = new MemberIndexer("20062010");
     }
 }

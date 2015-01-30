@@ -19,9 +19,9 @@ import org.apache.lucene.store.SimpleFSDirectory;
  *
  * @author Mostafa Dehghani
  */
-public class HierarchicalPLM {
+public class DSPLM {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(HierarchicalPLM.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DSPLM.class.getName());
     private String period;
     public IndexReader miReader;
     public IndexReader piReader;
@@ -40,7 +40,7 @@ public class HierarchicalPLM {
     private HashMap<String, LanguageModel> statPLM = new HashMap<>();
     private HashMap<String, LanguageModel> partyPLM = new HashMap<>();
 
-    public HierarchicalPLM(String period) throws IOException, Exception {
+    public DSPLM(String period) throws IOException, Exception {
         this.period = period;
         this.cabinet = new Cabinet(period);
         this.miReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
@@ -127,13 +127,13 @@ public class HierarchicalPLM {
     public LanguageModel getStatDoubleSidedPLM(String status) throws IOException {
         LanguageModel sPLM = this.getStatPLM(status);
         LanguageModel newLM = null;
-//        for (int i = 0; i < this.miReader.numDocs(); i++) {
-//            if (this.getMemStatus(i).equals(status)) {
-//                String mid = this.miReader.document(i).get("ID");
-//                newLM = new ParsimoniousLM(sPLM, this.getMemPLM(mid));
-//                sPLM = newLM;
-//            }
-//        }
+        for (int i = 0; i < this.miReader.numDocs(); i++) {
+            if (this.getMemStatus(i).equals(status)) {
+                String mid = this.miReader.document(i).get("ID");
+                newLM = new ParsimoniousLM(sPLM, this.getMemPLM(mid));
+                sPLM = newLM;
+            }
+        }
         for (int i = 0; i < this.piReader.numDocs(); i++) {
             String pid = this.piReader.document(i).get("ID");
             if (this.getPartyStatus(pid).equals(status)) {
@@ -184,7 +184,7 @@ public class HierarchicalPLM {
             return "nl.p.lidbontes";
         for (String s : affiliations) {
             aff = s;
-//            break;
+            break;
         }
         if (affiliations.size() > 1) {
             System.err.println("More than one affiliation: " + affiliations.toString() + " --> " + aff);
@@ -194,7 +194,7 @@ public class HierarchicalPLM {
 
 //    
 //    public static void main(String[] args) throws Exception {
-//        HierarchicalPLM h = new HierarchicalPLM("20122014");
+//        DSPLM h = new DSPLM("20122014");
 //        LanguageModel l = h.getPartyDoubleSidedPLM();
 //        System.out.println(l.LanguageModel.size());
 //    }

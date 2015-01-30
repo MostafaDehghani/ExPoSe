@@ -47,7 +47,7 @@ public class classification {
     }
     
     public static void main(String[] args) throws Exception {
-        HierarchicalPLM hplm = new HierarchicalPLM("20122014");
+        DSPLM hplm = new DSPLM("20102012");
         HashMap<String,LanguageModel> classes = new HashMap<>();
         HashMap<Map.Entry<String,String>,LanguageModel> obj = new HashMap<>();
         for(int i=0; i<hplm.statiReader.numDocs();i++){

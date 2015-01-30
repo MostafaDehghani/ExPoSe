@@ -79,6 +79,6 @@ public class allIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        allIndexer ai = new allIndexer("20062010");
+        allIndexer ai = new allIndexer("20122014");
     }
 }

@@ -1,7 +1,6 @@
 package nl.uva.lucenefacility;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import org.apache.lucene.analysis.Analyzer;
@@ -13,14 +12,15 @@ import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilter;
-import org.apache.lucene.analysis.miscellaneous.StemmerOverrideFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterFilter;
 import org.apache.lucene.analysis.nl.DutchAnalyzer;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.util.CharArrayMap;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.analysis.util.CharTokenizer;
+import org.apache.lucene.util.Version;
 import org.tartarus.snowball.ext.DutchStemmer;
 
 /**
@@ -231,7 +231,39 @@ public class MyAnalyzer {
                 }
             };
         }
-        return new StandardAnalyzer();
+//        return new StandardAnalyzer();
+//        return new AnalyzerWrapper() {
+//                @Override
+//                protected Analyzer getWrappedAnalyzer(String string) {
+//                    CharArrayMap<String> m = new CharArrayMap<String>(Version.LUCENE_CURRENT, 0, false);
+//                    return new DutchAnalyzer(Version.LUCENE_CURRENT,  DutchAnalyzer.getDefaultStopSet()
+//                            ,  new CharArraySet(new ArrayList<String>(), true), m);
+//                }
+//
+//                @Override
+//                protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
+//
+//                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+//                    tokenStream = new LowerCaseFilter(tokenStream);
+//                    tokenStream = new StopFilter(tokenStream, DutchAnalyzer.getDefaultStopSet());
+//                    return new DutchAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
+//                }
+//            };
+        return new AnalyzerWrapper() {
+                @Override
+                protected Analyzer getWrappedAnalyzer(String string) {
+                    return new StandardAnalyzer();
+                }
+
+                @Override
+                protected Analyzer.TokenStreamComponents wrapComponents(String fieldName, Analyzer.TokenStreamComponents tsc) {
+
+                    TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
+                    tokenStream = new LowerCaseFilter(tokenStream);
+                    tokenStream = new StopFilter(tokenStream, DutchAnalyzer.getDefaultStopSet());
+                    return new StandardAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
+                }
+            };
     }
 
     public Analyzer getAnalyzer(String Language) throws FileNotFoundException {

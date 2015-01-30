@@ -86,6 +86,6 @@ public class PartiesIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        PartiesIndexer pi = new PartiesIndexer("20122014");
+        PartiesIndexer pi = new PartiesIndexer("20062010");
     }
 }
