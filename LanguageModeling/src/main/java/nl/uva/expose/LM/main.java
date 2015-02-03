@@ -27,28 +27,54 @@ public class main {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
 
     public static void main(String[] args) throws IOException, Exception {
-       main1();
+       main1("20102012");
 
     }
 
+    
+    public static void main0(String Period) throws Exception {
+        IterativeDSPLM hplm = new IterativeDSPLM(Period);
+        
+        LanguageModel aPLM0 = hplm.getAllITDSPLM(0);
+        LanguageModel aPLM1 = hplm.getAllITDSPLM(1);
+        LanguageModel aPLM2 = hplm.getAllITDSPLM(2);
+        LanguageModel OpoPLM0 = hplm.getStatITDSPLM("Oposition", 3);
+//        LanguageModel OpoPLM1 = hplm.getStatITDSPLM("Oposition", 1);
+//        LanguageModel OpoPLM2 = hplm.getStatITDSPLM("Oposition", 2);
+
+        
+        HashMap<Integer, String> lines = new HashMap<>();
+        lines = csvCreator(lines, aPLM0, "aPLM0");
+        lines = csvCreator(lines, aPLM1, "aPLM1");
+        lines = csvCreator(lines, aPLM2, "aPLM2");
+//        lines = csvCreator(lines, OpoPLM2, "OpoPLM2");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms_"+Period+".csv")));
+        for (Map.Entry<Integer, String> e : lines.entrySet()) {
+            bw.write(e.getValue() + "\n");
+        }
+        bw.close();
+    }
 
     
-    public static void main1() throws Exception {
-        DSPLM hplm = new DSPLM("20102012");
-        LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
-        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
-        LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
-        LanguageModel CoaSLM = hplm.getStatSLM("Coalition");
-        LanguageModel oldCoaPLM = hplm.getStatPLM("Coalition");
-        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
+    public static void main1(String Period) throws Exception {
+        DSPLM hplm = new DSPLM(Period);
+        
+        LanguageModel aPLM = hplm.getparliamentDoubleSidedPLM();
+//        LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
+//        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
+//        LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
+//        LanguageModel CoaSLM = hplm.getStatSLM("Coalition");
+//        LanguageModel oldCoaPLM = hplm.getStatPLM("Coalition");
+//        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
         HashMap<Integer, String> lines = new HashMap<>();
-        lines = csvCreator(lines, OpoSLM, "OpoSLM");
-        lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
-        lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
-        lines = csvCreator(lines, CoaSLM, "CoaSLM");
-        lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
-        lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms.csv")));
+        lines = csvCreator(lines, aPLM, "aPLM");
+//        lines = csvCreator(lines, OpoSLM, "OpoSLM");
+//        lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
+//        lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
+//        lines = csvCreator(lines, CoaSLM, "CoaSLM");
+//        lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
+//        lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms_"+Period+".csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");
         }
@@ -147,10 +173,10 @@ public class main {
         LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
         Divergence d1 = new Divergence(newCoaPLM, newCoaPLM);
         Divergence d2 = new Divergence(newOpoPLM, newCoaPLM);
-        System.out.println(d1.getJsdScore());
-        System.out.println(d1.getKldScore());
-        System.out.println(d2.getJsdScore());
-        System.out.println(d2.getKldScore());
+        System.out.println(d1.getJsdSimScore());
+        System.out.println(d1.getKldSimScore());
+        System.out.println(d2.getJsdSimScore());
+        System.out.println(d2.getKldSimScore());
     }
     
 }

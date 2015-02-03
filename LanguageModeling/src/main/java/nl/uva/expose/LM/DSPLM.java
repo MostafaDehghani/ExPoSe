@@ -124,6 +124,27 @@ public class DSPLM {
         return pPLM;
     }
     
+    public LanguageModel getparliamentDoubleSidedPLM() throws IOException {
+        LanguageModel aPLM = this.aSLM;
+        LanguageModel newLM = null;
+        for (int i = 0; i < this.miReader.numDocs(); i++) {
+                String mid = this.miReader.document(i).get("ID");
+                newLM = new ParsimoniousLM(aPLM, this.getMemPLM(mid));
+                aPLM = newLM;
+        }
+        for (int i = 0; i < this.piReader.numDocs(); i++) {
+            String pid = this.piReader.document(i).get("ID");
+                newLM = new ParsimoniousLM(aPLM, this.getPartyDoubleSidedPLM(pid));
+                aPLM = newLM;
+        }
+        for (int i = 0; i < this.statiReader.numDocs(); i++) {
+                String statid = this.statiReader.document(i).get("ID");
+                newLM = new ParsimoniousLM(aPLM, this.getStatDoubleSidedPLM(statid));
+                aPLM = newLM;
+        }
+        return newLM;
+
+    }
     public LanguageModel getStatDoubleSidedPLM(String status) throws IOException {
         LanguageModel sPLM = this.getStatPLM(status);
         LanguageModel newLM = null;
@@ -172,19 +193,19 @@ public class DSPLM {
         return status;
     }
 
-    private String getPartyStatus(String partyName) throws IOException {
+    public String getPartyStatus(String partyName) throws IOException {
         String status = this.cabinet.getStatus(partyName);
         return status;
     }
 
-    private String getMemParty(Integer memIndexId) throws IOException {
+    public String getMemParty(Integer memIndexId) throws IOException {
         String aff = "";
         HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
         if(affiliations.contains("nl.p.lidbontes"))
             return "nl.p.lidbontes";
         for (String s : affiliations) {
             aff = s;
-            break;
+//            break;
         }
         if (affiliations.size() > 1) {
             System.err.println("More than one affiliation: " + affiliations.toString() + " --> " + aff);

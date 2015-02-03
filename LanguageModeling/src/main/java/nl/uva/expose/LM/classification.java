@@ -33,7 +33,7 @@ public class classification {
         for(Entry<Map.Entry<String,String>,LanguageModel> o: this.obj.entrySet()){
             for(Entry<String,LanguageModel>c: this.classes.entrySet()){
                 Divergence d = new Divergence(o.getValue(), c.getValue());
-                Double score = -1 * d.getJsdScore();
+                Double score = d.getJsdSimScore();
                 if(score>label.getValue())
                     label = new AbstractMap.SimpleEntry<>(c.getKey(),score);
             }

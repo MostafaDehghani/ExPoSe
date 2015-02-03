@@ -55,12 +55,12 @@ public class Divergence {
         return res;
     }
 
-    public Double getKldScore() {
-        return this.KldScore(this.LM1.LanguageModel, this.LM2.LanguageModel);
+    public Double getKldSimScore() {
+        return -1 * this.KldScore(this.LM1.LanguageModel, this.LM2.LanguageModel);
     }
 
-    public Double getJsdScore() {
-        return this.JsdScore(this.LM1.LanguageModel, this.LM2.LanguageModel);
+    public Double getJsdSimScore() {
+        return (1 - this.JsdScore(this.LM1.LanguageModel, this.LM2.LanguageModel));
     }
 
 }
