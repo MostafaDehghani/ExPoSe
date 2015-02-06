@@ -87,6 +87,7 @@ public final class ParsimoniousLM extends LanguageModel {
                 this.LanguageModel.put(e.getKey(), newProb);
             }
         }
+        this.LanguageModel = this.getNormalizedLM();
         this.tmpLM = new LanguageModel(new HashMap<>(this.LanguageModel));
     }
 

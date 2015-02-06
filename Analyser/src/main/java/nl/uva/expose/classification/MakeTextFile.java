@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashSet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import nl.uva.expose.entities.government.Cabinet;
@@ -38,7 +39,7 @@ public class MakeTextFile {
         this.cabinet = new Cabinet(period);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main0() throws Exception {
         String period = "20122014";
         MakeTextFile mtf = new MakeTextFile(period);
         String dir = "/Users/Mosi/Desktop/SIGIR_SHORT/" + period + "-mem";
@@ -72,5 +73,58 @@ public class MakeTextFile {
             bw.close();
             System.out.println("doc " + id + "is generated...");
         }
+    }
+    
+    public static void main1() throws Exception {
+        String period = "20062010";
+        MakeTextFile mtf = new MakeTextFile(period);
+        String dir = "/Users/Mosi/Desktop/SIGIR_SHORT/" + period + "-mem";
+        File dirF = new File(dir);
+        if (dirF.exists()) {
+            FileUtils.deleteDirectory(dirF);
+        }
+        FileUtils.forceMkdir(new File(dir));
+        for (int i = 0; i < mtf.mireader.numDocs(); i++) {
+            Document hitDoc = mtf.mireader.document(i);
+            String id = hitDoc.get("ID");
+            String text = hitDoc.get("TEXT");
+            String party= mtf.getMemParty(i);
+            File dirFF = new File(dir + "/" + party);
+            if (!dirFF.exists()) {
+                FileUtils.forceMkdir(new File(dir + "/" + party));
+            }
+            FileWriter fileWritter = new FileWriter(dir + "/" + party + "/" + id);
+            BufferedWriter bw = new BufferedWriter(fileWritter);
+            bw.write(text);
+            bw.close();
+            System.out.println("doc " + id + "is generated...");
+        }
+    }
+    
+    public String getMemParty(Integer memIndexId) throws IOException {
+        String aff = "";
+        HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
+        //
+        if(affiliations.contains("nl.p.lidbontes"))
+            return "nl.p.lidbontes";
+        if(affiliations.contains("nl.p.groepkortenoevenhernandez"))
+            return "nl.p.groepkortenoevenhernandez";
+        if(affiliations.contains("nl.p.lidbrinkman"))
+            return "nl.p.lidbrinkman";
+       if(affiliations.contains("nl.p.lidverdonk"))
+            return "nl.p.lidverdonk";
+       //
+        for (String s : affiliations) {
+            aff = s;
+//            break;
+        }
+        if (affiliations.size() > 1) {
+            System.err.println("More than one affiliation: " + affiliations.toString() + " --> " + aff);
+        }
+        return aff.trim();
+    }
+    
+    public static void main(String[] args) throws Exception {
+        main1();
     }
 }

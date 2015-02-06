@@ -76,6 +76,19 @@ public class LanguageModel {
         }
         return newList;
     }
+    
+    public HashMap<String, Double> getNormalizedLM() {
+        Double summation = 0D;
+        HashMap<String, Double> newLM = new HashMap<>();
+        for (Map.Entry<String, Double> e : this.LanguageModel.entrySet()) {
+            summation += e.getValue();
+        }
+        for (Map.Entry<String, Double> e :this.LanguageModel.entrySet() ) {
+            Double newProb = e.getValue() / summation;
+            newLM.put(e.getKey(), newProb);
+        }
+        return newLM;
+    }
 
     public List<Map.Entry<String, Double>> getSorted() {
         List<Map.Entry<String, Double>> sorted = sortByValues(LanguageModel, false);

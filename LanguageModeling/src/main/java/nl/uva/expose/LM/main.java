@@ -27,27 +27,73 @@ public class main {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
 
     public static void main(String[] args) throws IOException, Exception {
-       main1("20102012");
+       main0("20122014");
 
     }
 
     
     public static void main0(String Period) throws Exception {
-        IterativeDSPLM hplm = new IterativeDSPLM(Period);
+        IterativeDSPLM idsplm = new IterativeDSPLM(Period);
+        DSPLM plm = new DSPLM(Period);
         
-        LanguageModel aPLM0 = hplm.getAllITDSPLM(0);
-        LanguageModel aPLM1 = hplm.getAllITDSPLM(1);
-        LanguageModel aPLM2 = hplm.getAllITDSPLM(2);
-        LanguageModel OpoPLM0 = hplm.getStatITDSPLM("Oposition", 3);
-//        LanguageModel OpoPLM1 = hplm.getStatITDSPLM("Oposition", 1);
-//        LanguageModel OpoPLM2 = hplm.getStatITDSPLM("Oposition", 2);
+        LanguageModel PLM_vvd0 = plm.getPartySLM("nl.p.vvd");
+//        LanguageModel PLM_vvd1 = plm.getPartyPLM("nl.p.vvd");
+        LanguageModel PLM_vvd2 = idsplm.getPartyITDSPLM("nl.p.vvd",1);
+
+        LanguageModel PLM_pvda0 = plm.getPartySLM("nl.p.pvda");
+//        LanguageModel PLM_pvda1 = plm.getPartyPLM("nl.p.pvda");
+        LanguageModel PLM_pvda2 = idsplm.getPartyITDSPLM("nl.p.pvda",1);
+        
+        LanguageModel PLM_cda0 = plm.getPartySLM("nl.p.cda");
+//        LanguageModel PLM_cda1 = plm.getPartyPLM("nl.p.cda");
+        LanguageModel PLM_cda2 = idsplm.getPartyITDSPLM("nl.p.cda",1);
+        
+        LanguageModel PLM_pvv0 = plm.getPartySLM("nl.p.pvv");
+//        LanguageModel PLM_pvv1 = plm.getPartyPLM("nl.p.pvv");
+        LanguageModel PLM_pvv2 = idsplm.getPartyITDSPLM("nl.p.pvv",1);
+        
+        LanguageModel PLM_sp0 = plm.getPartySLM("nl.p.sp");
+//        LanguageModel PLM_sp1 = plm.getPartyPLM("nl.p.sp");
+        LanguageModel PLM_sp2 = idsplm.getPartyITDSPLM("nl.p.sp",1);
+        
+        LanguageModel PLM_d660 = plm.getPartySLM("nl.p.d66");
+//        LanguageModel PLM_d661 = plm.getPartyPLM("nl.p.d66");
+        LanguageModel PLM_d662 = idsplm.getPartyITDSPLM("nl.p.d66",1);
+        
+        LanguageModel PLM_cu0 = plm.getPartySLM("nl.p.cu");
+//        LanguageModel PLM_cu1 = plm.getPartyPLM("nl.p.cu");
+        LanguageModel PLM_cu2 = idsplm.getPartyITDSPLM("nl.p.cu",1);
+        
+        LanguageModel PLM_gl0 = plm.getPartySLM("nl.p.gl");
+//        LanguageModel PLM_gl1 = plm.getPartyPLM("nl.p.gl");
+        LanguageModel PLM_gl2 = idsplm.getPartyITDSPLM("nl.p.gl",1);
 
         
         HashMap<Integer, String> lines = new HashMap<>();
-        lines = csvCreator(lines, aPLM0, "aPLM0");
-        lines = csvCreator(lines, aPLM1, "aPLM1");
-        lines = csvCreator(lines, aPLM2, "aPLM2");
-//        lines = csvCreator(lines, OpoPLM2, "OpoPLM2");
+        lines = csvCreator(lines, PLM_vvd0, "SLM");
+//        lines = csvCreator(lines, PLM_vvd1, "PLM");
+        lines = csvCreator(lines, PLM_vvd2, "DSPLM");
+        lines = csvCreator(lines, PLM_pvda0, "SLM");
+//        lines = csvCreator(lines, PLM_pvda1, "PLM");
+        lines = csvCreator(lines, PLM_pvda2, "DSPLM");
+        lines = csvCreator(lines, PLM_cda0, "SLM");
+//        lines = csvCreator(lines, PLM_cda1, "PLM");
+        lines = csvCreator(lines, PLM_cda2, "DSPLM");
+        lines = csvCreator(lines, PLM_pvv0, "SLM");
+//        lines = csvCreator(lines, PLM_pvv1, "PLM");
+        lines = csvCreator(lines, PLM_pvv2, "DSPLM");
+        lines = csvCreator(lines, PLM_sp0, "SLM");
+//        lines = csvCreator(lines, PLM_sp1, "PLM");
+        lines = csvCreator(lines, PLM_sp2, "DSPLM");
+        lines = csvCreator(lines, PLM_d660, "SLM");
+//        lines = csvCreator(lines, PLM_d661, "PLM");
+        lines = csvCreator(lines, PLM_d662, "DSPLM");
+        lines = csvCreator(lines, PLM_cu0, "SLM");
+//        lines = csvCreator(lines, PLM_cu1, "PLM");
+        lines = csvCreator(lines, PLM_cu2, "DSPLM");
+        lines = csvCreator(lines, PLM_gl0, "SLM");
+//        lines = csvCreator(lines, PLM_gl1, "PLM");
+        lines = csvCreator(lines, PLM_gl2, "DSPLM");
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms_"+Period+".csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");
@@ -59,21 +105,21 @@ public class main {
     public static void main1(String Period) throws Exception {
         DSPLM hplm = new DSPLM(Period);
         
-        LanguageModel aPLM = hplm.getparliamentDoubleSidedPLM();
-//        LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
-//        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
-//        LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
-//        LanguageModel CoaSLM = hplm.getStatSLM("Coalition");
-//        LanguageModel oldCoaPLM = hplm.getStatPLM("Coalition");
-//        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
+//        LanguageModel aPLM = hplm.getparliamentDoubleSidedPLM();
+        LanguageModel oldOpoPLM = hplm.getStatPLM("Oposition");
+        LanguageModel newOpoPLM = hplm.getStatDoubleSidedPLM("Oposition");
+        LanguageModel OpoSLM = hplm.getStatSLM("Oposition");
+        LanguageModel CoaSLM = hplm.getStatSLM("Coalition");
+        LanguageModel oldCoaPLM = hplm.getStatPLM("Coalition");
+        LanguageModel newCoaPLM = hplm.getStatDoubleSidedPLM("Coalition");
         HashMap<Integer, String> lines = new HashMap<>();
-        lines = csvCreator(lines, aPLM, "aPLM");
-//        lines = csvCreator(lines, OpoSLM, "OpoSLM");
-//        lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
-//        lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
-//        lines = csvCreator(lines, CoaSLM, "CoaSLM");
-//        lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
-//        lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
+//        lines = csvCreator(lines, aPLM, "aPLM");
+        lines = csvCreator(lines, OpoSLM, "OpoSLM");
+        lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
+        lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
+        lines = csvCreator(lines, CoaSLM, "CoaSLM");
+        lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
+        lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lms_"+Period+".csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");
@@ -87,9 +133,9 @@ public class main {
         //
         String header = lines.get(0);
         if (cNum == 0) {
-            header = cName + ":P(" + cName + ")";
+            header = cName + ", ";
         } else {
-            header += ",," + cName + ":P(" + cName + ")";
+            header += ",," + cName + ", ";
         }
         lines.put(0, header);
         //

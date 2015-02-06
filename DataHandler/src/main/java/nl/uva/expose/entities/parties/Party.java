@@ -15,7 +15,7 @@ import nl.uva.expose.entities.DateTime;
  */
 public class Party {
 
-    private String pmId;
+    private String pId;
     private String fullName;
 //    private String shortName;
 //    private String longName;
@@ -28,9 +28,13 @@ public class Party {
     private StringBuilder speeches;
     private Integer speechNum;
     private HashSet<String> speakers;
-
+    
+    public Party(String pmId){
+        this.pId = pmId;
+    }
+    
     public Party(String pmId, String fullName, DateTime formation, ArrayList<String> ancestorsId, ArrayList<Seat> seats) {
-        this.pmId = pmId;
+        this.pId = pmId;
         this.fullName = fullName;
         this.formation = formation;
         this.ancestorsId = ancestorsId;
@@ -38,7 +42,7 @@ public class Party {
     }
 
     public Party(String period, String pmId, String fullName, DateTime formation, String speech, String speaker) {
-        this.pmId = pmId;
+        this.pId = pmId;
         this.fullName = fullName;
         this.formation = formation;
         this.speeches = new StringBuilder();
@@ -49,7 +53,7 @@ public class Party {
     }
 
     public String getPmId() {
-        return pmId;
+        return pId;
     }
 
     public String getFullName() {

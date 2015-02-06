@@ -42,11 +42,11 @@ public class DataLoader {
             File pmInfoDir = new File(configFile.getProperty("MEMBER_INFO_FILES_PATHS"));
             File pInfoDir = new File(configFile.getProperty("PARTY_INFO_FILES_PATHS"));
             File dInfoDir = new File(configFile.getProperty("DOCUMENT_INFO_FILES_PATHS") + period);
-            File pmdlFile = new File(configFile.getProperty("PM_DEBAIE_LIST_FILES_PATHS"));
+//            File pmdlFile = new File(configFile.getProperty("PM_DEBAIE_LIST_FILES_PATHS"));
             this.data.period = period;
-            this.politicalMashupDebateListLoader(pmdlFile);
+//            this.politicalMashupDebateListLoader(pmdlFile);
             this.data.members = pMemDataLoader(pmInfoDir);
-            this.data.parties = parDataLoader(pInfoDir);
+//            this.data.parties = parDataLoader(pInfoDir);
             this.data.cabinet = new Cabinet(period);
             this.data.debates = debateDataLoader(dInfoDir);
             this.memSpeechLoader();

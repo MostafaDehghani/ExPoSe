@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import static nl.uva.expose.settings.Config.configFile;
 
 /**
  *
@@ -37,42 +38,12 @@ public class Cabinet {
         ArrayList coalition = null;
         String name = null;
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        if (this.period.equals("20062010")) {
-            try {
-                //
-                sD = formatter.parse("22-02-2007");
-                eD = formatter.parse("14-10-2010");
-                coalition = new ArrayList(Arrays.asList("nl.p.cda", "nl.p.pvda", "nl.p.cu"));
-                name = "BalkenendeIV";
-            } catch (ParseException ex) {
-                log.error(ex);
-                throw ex;
-            }
-        } else if (this.period.equals("20102012")) {
-            try {
-                //
-                sD = formatter.parse("14-10-2010");
-                eD = formatter.parse("05-11-2012");
-                coalition = new ArrayList(Arrays.asList("nl.p.vvd", "nl.p.cda"));
-                name = "rutte-I";
-            } catch (ParseException ex) {
-                log.error(ex);
-                throw ex;
-            }
-        } else if (this.period.equals("20122014")) {
-            try {
-                //
-                sD = formatter.parse("05-11-2012");
-                eD = new Date();
-                coalition = new ArrayList(Arrays.asList("nl.p.vvd", "nl.p.pvda"));
-                name = "rutte-IّI";
-            } catch (ParseException ex) {
-                log.error(ex);
-                throw ex;
-            }
-        } else {
-            log.error("No cabinet found for this period");
-        }
+        String cabInfoLine = configFile.getProperty(this.period);
+        String[] cabInfo = cabInfoLine.split(",");
+        name = cabInfo[0];
+        sD = formatter.parse(cabInfo[1]);
+        eD = cabInfo[2].equals("now")?new Date():formatter.parse(cabInfo[2]);
+        coalition = new ArrayList(Arrays.asList(Arrays.copyOfRange(cabInfo, 3, cabInfo.length)));
         this.startDate = sD;
         this.endDate = eD;
         this.name = name;
@@ -87,7 +58,7 @@ public class Cabinet {
                 break;
             }
         }
-        if (Affiliations.contains("gov")) {
+        if (Affiliations.equals("gov")) {
             status = "1";
         }
         if (Affiliations.equals("parl")) {

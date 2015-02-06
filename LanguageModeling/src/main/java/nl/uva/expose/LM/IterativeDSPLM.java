@@ -282,9 +282,16 @@ public LanguageModel getMemITDSPLM(String memId, Integer itNum) throws IOExcepti
     public String getMemParty(Integer memIndexId) throws IOException {
         String aff = "";
         HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
-        if (affiliations.contains("nl.p.lidbontes")) {
+        //
+        if(affiliations.contains("nl.p.lidbontes"))
             return "nl.p.lidbontes";
-        }
+        if(affiliations.contains("nl.p.groepkortenoevenhernandez"))
+            return "nl.p.groepkortenoevenhernandez";
+        if(affiliations.contains("nl.p.lidbrinkman"))
+            return "nl.p.lidbrinkman";
+       if(affiliations.contains("nl.p.lidverdonk"))
+            return "nl.p.lidverdonk";
+       //
         for (String s : affiliations) {
             aff = s;
 //            break;
