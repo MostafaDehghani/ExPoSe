@@ -50,7 +50,7 @@ public class PartiesIndexer extends Indexer {
                 }
             }
             for (Map.Entry<String, StringBuilder> e : ps.entrySet()) {
-                this.IndexDoc(e);
+                this.IndexDoc(e);   
             }
         } catch (Exception ex) {
             log.error(ex);
@@ -86,6 +86,6 @@ public class PartiesIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        PartiesIndexer pi = new PartiesIndexer("20062010");
+        PartiesIndexer pi = new PartiesIndexer("20052010");
     }
 }
