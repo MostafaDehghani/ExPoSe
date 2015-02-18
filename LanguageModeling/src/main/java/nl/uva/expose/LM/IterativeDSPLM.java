@@ -32,7 +32,7 @@ public class IterativeDSPLM {
     private String field;
     private Cabinet cabinet;
 
-    private LanguageModel aSLM;
+    public LanguageModel aSLM;
     private HashMap<Integer,LanguageModel> allDSPLM = new HashMap<Integer,LanguageModel>();
     private HashMap<String, LanguageModel> memSLM = new HashMap<>();
     private HashMap<String, LanguageModel> statSLM = new HashMap<>();

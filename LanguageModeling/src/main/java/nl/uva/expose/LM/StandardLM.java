@@ -45,6 +45,7 @@ public class StandardLM extends LanguageModel {
             for (Map.Entry<String, Double> e : tv.entrySet()) {
                 Double prob = e.getValue() / dLength;
                 tv.put(e.getKey(), prob);
+//                tv.put(e.getKey(), e.getValue());
             }
         } catch (IOException ex) {
             log.error(ex);

@@ -23,7 +23,9 @@ public class Divergence {
         this.LM2 = LM2;
     }
 
-    private Double JsdScore(HashMap<String, Double> d1, HashMap<String, Double> d2) {
+    public Divergence(){}
+    
+    public Double JsdScore(HashMap<String, Double> d1, HashMap<String, Double> d2) {
         Double score = 0D;
         HashMap<String, Double> avg = new HashMap<>();
         HashSet<String> allTerms = new HashSet<>();
@@ -38,7 +40,7 @@ public class Divergence {
         return score;
     }
 
-    private Double KldScore(HashMap<String, Double> d1, HashMap<String, Double> d2) {
+    public Double KldScore(HashMap<String, Double> d1, HashMap<String, Double> d2) {
         Double score = 0D;
         for (String item : d1.keySet()) {
             if (d2.containsKey(item)) {
@@ -51,7 +53,7 @@ public class Divergence {
     }
 
     private Double singleItemKLD(Double p, Double q) {
-        Double res = p * Math.log(p / q);
+        Double res = p * this.log(p/q, 2D);
         return res;
     }
 
@@ -61,6 +63,11 @@ public class Divergence {
 
     public Double getJsdSimScore() {
         return (1 - this.JsdScore(this.LM1.LanguageModel, this.LM2.LanguageModel));
+    }
+    
+    private Double log(Double x, Double base)
+    {
+        return  (Math.log(x) / Math.log(base));
     }
 
 }
