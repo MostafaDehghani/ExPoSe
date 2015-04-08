@@ -33,18 +33,18 @@ public class MemberIndexer extends Indexer {
     @Override
     protected void docIndexer() throws Exception {
         try {
-            for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {
-                Speech s = e.getValue();
-                try {
-                    Member m = data.members.get(s.getSpeakerId());
-                    StringBuilder sb = m.getSpeeches();
-                    m.setSpeeches(sb.append(s.getSpeechText()).append("\n"));
-                    data.members.put(m.getmId(), m);
-                } catch (NullPointerException ex) {
-//                    log.error(ex);
-                    log.error("No information for seakerID: \"" + s.getSpeakerId() + "\" in speach:" + s.getSpeechId());
-                }
-            }
+//            for (Map.Entry<String, Speech> e : data.speeches.entrySet()) {
+//                Speech s = e.getValue();
+//                try {
+//                    Member m = data.members.get(s.getSpeakerId());
+//                    StringBuilder sb = m.getSpeeches();
+//                    m.setSpeeches(sb.append(s.getSpeechText()).append("\n"));
+//                    data.members.put(m.getmId(), m);
+//                } catch (NullPointerException ex) {
+////                    log.error(ex);
+//                    log.error("No information for seakerID: \"" + s.getSpeakerId() + "\" in speach:" + s.getSpeechId());
+//                }
+//            }
             for (Map.Entry<String, Member> e : data.members.entrySet()) {
 //                String fileName = "memSpeeches/"+e.getKey()+".txt";
 //                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fileName)));
@@ -111,6 +111,6 @@ public class MemberIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        MemberIndexer mi = new MemberIndexer("20052010");
+        MemberIndexer mi = new MemberIndexer("20122014");
     }
 }

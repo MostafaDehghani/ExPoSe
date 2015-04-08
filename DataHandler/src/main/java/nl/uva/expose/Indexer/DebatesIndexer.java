@@ -110,6 +110,6 @@ public class DebatesIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        DebatesIndexer di = new DebatesIndexer("20062010");
+        DebatesIndexer di = new DebatesIndexer("20122014");
     }
 }

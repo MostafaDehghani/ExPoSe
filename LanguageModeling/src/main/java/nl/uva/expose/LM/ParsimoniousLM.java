@@ -19,8 +19,8 @@ public final class ParsimoniousLM extends LanguageModel {
     private LanguageModel documentLM;
     private HashMap<String, Double> documentTV;
     private LanguageModel tmpLM;
-    private Double alpha = 0.1D;
-    private Double probThreshold = 0.0005D;
+    private Double alpha = 0.008D;
+    private Double probThreshold = 0.00001D;
     private Integer numberOfIttereation = 100;
 
     public ParsimoniousLM(LanguageModel documentLM, HashMap<String, Double> documentTV, LanguageModel backgroundLM,
@@ -35,8 +35,16 @@ public final class ParsimoniousLM extends LanguageModel {
         this.generateParsimoniousLanguageModel();
     }
 
+     public ParsimoniousLM(LanguageModel documentLM, HashMap<String, Double> documentTV, LanguageModel backgroundLM) {
+        this.backgroundLM = backgroundLM;
+        this.documentLM = documentLM;
+        this.documentTV = documentTV;
+        this.tmpLM = documentLM;
+        this.generateParsimoniousLanguageModel();
+    }
+     
     public ParsimoniousLM(LanguageModel documentLM, LanguageModel backgroundLM,
-            Double alpha, Double probThreshold, Integer numberOfIttereation) {
+        Double alpha, Double probThreshold, Integer numberOfIttereation) {
         this.backgroundLM = backgroundLM;
         this.documentLM = documentLM;
         this.documentTV = documentLM.LanguageModel;
@@ -68,8 +76,12 @@ public final class ParsimoniousLM extends LanguageModel {
                 backgoundProb = 0D;
             }
             Double tf = documentTV.get(e.getKey());
-            Double newProb = tf * ((alpha * e.getValue()) / ((alpha * e.getValue()) + ((1 - alpha) * backgoundProb)));
-            this.LanguageModel.put(e.getKey(), newProb);
+//            try{
+                Double newProb = tf * ((alpha * e.getValue()) / ((alpha * e.getValue()) + ((1 - alpha) * backgoundProb)));
+                this.LanguageModel.put(e.getKey(), newProb);
+//            }catch(Exception ex){
+//                System.out.println("---");
+//            }  
         }
         this.tmpLM = new LanguageModel(new HashMap<>(this.LanguageModel));
     }
@@ -96,5 +108,29 @@ public final class ParsimoniousLM extends LanguageModel {
             this.E_step(this.alpha);
             this.M_step(this.probThreshold);
         }
+    }
+    
+    
+    public static void main(String[] args) {
+        LanguageModel dlm = new LanguageModel();
+        dlm.LanguageModel.put("a", 0.3D);
+        dlm.LanguageModel.put("b", 0.3D);
+        dlm.LanguageModel.put("c", 0.3D);
+        dlm.LanguageModel.put("d", 0.1D);
+        
+        
+        LanguageModel blm = new LanguageModel();
+        blm.LanguageModel.put("a", 7D/15D);
+        blm.LanguageModel.put("b", 4D/15D);
+        blm.LanguageModel.put("c", 3D/15D);
+        blm.LanguageModel.put("d", 1D/15D);
+        
+        SampleGenerator sg = new SampleGenerator(blm);
+        for(int i=0;i<1000;i++)
+            System.out.println(sg.getSample(1000));
+        
+//        ParsimoniousLM dplm = new ParsimoniousLM(dlm, blm,0.1D,0.005D,100);
+//        
+//        System.out.println(dplm.LanguageModel.toString());
     }
 }

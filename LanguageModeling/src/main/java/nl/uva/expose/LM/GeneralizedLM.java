@@ -19,9 +19,9 @@ import org.apache.lucene.store.SimpleFSDirectory;
  *
  * @author Mostafa Dehghani
  */
-public class IterativeDSPLM {
+public class GeneralizedLM {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(IterativeDSPLM.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(GeneralizedLM.class.getName());
     private String period;
     public IndexReader miReader;
     public IndexReader piReader;
@@ -43,7 +43,7 @@ public class IterativeDSPLM {
     private HashMap<Integer,HashMap<String, LanguageModel>> statDSPLM_s2 = new HashMap<Integer,HashMap<String, LanguageModel>>();
     private HashMap<Integer,HashMap<String, LanguageModel>> partyDSPLM_s2 = new HashMap<Integer,HashMap<String, LanguageModel>>();
 
-    public IterativeDSPLM(String period) throws IOException, Exception {
+    public GeneralizedLM(String period) throws IOException, Exception {
         this.period = period;
         this.cabinet = new Cabinet(period);
         this.miReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));

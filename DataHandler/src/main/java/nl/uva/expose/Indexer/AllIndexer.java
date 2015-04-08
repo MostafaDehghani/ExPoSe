@@ -18,11 +18,11 @@ import org.apache.lucene.document.Field;
  *
  * @author Mostafa Dehghani
  */
-public class allIndexer extends Indexer {
+public class AllIndexer extends Indexer {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(allIndexer.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AllIndexer.class.getName());
 
-    public allIndexer(String period) throws Exception {
+    public AllIndexer(String period) throws Exception {
         super(period, "a");
     }
 
@@ -79,6 +79,6 @@ public class allIndexer extends Indexer {
     }
 
     public static void main(String[] args) throws Exception {
-        allIndexer ai = new allIndexer("20122014");
+        AllIndexer ai = new AllIndexer("20122014");
     }
 }

@@ -260,7 +260,7 @@ public class MyAnalyzer {
 
                     TokenStream tokenStream = new StandardFilter(tsc.getTokenStream());
                     tokenStream = new LowerCaseFilter(tokenStream);
-                    tokenStream = new StopFilter(tokenStream, DutchAnalyzer.getDefaultStopSet());
+//                    tokenStream = new StopFilter(tokenStream, DutchAnalyzer.getDefaultStopSet());
                     return new StandardAnalyzer.TokenStreamComponents(tsc.getTokenizer(), tokenStream);
                 }
             };

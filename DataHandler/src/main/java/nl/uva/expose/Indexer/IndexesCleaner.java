@@ -54,6 +54,6 @@ public class IndexesCleaner {
     }
 
     public static void main(String[] args) {
-        new IndexesCleaner("20062010");
+        new IndexesCleaner("20122014");
     }
 }
