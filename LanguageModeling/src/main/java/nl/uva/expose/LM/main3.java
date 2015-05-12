@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 
@@ -19,9 +18,9 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Mostafa Dehghani
  */
-public class main {
+public class main3 {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main3.class.getName());
 
     public static void main(String[] args) throws IOException, Exception {
          glm("20122014");
@@ -32,71 +31,32 @@ public class main {
         GeneralizedLM glm = new GeneralizedLM(period);
         LanguageModel CLM = glm.aSLM;
         Integer itNum = 1;
-//        for(int i=0; i<glm.miReader.numDocs();i++){
-//            String memberId =  "nl.m.02258"; // glm.getMemID(i); //
-            String memberId =  "nl.m.02335"; // glm.getMemID(i); //
-            
-            
-//            String memberId2 =  "nl.m.03301"; // glm.getMemID(i); //
-//            String memberId =  "nl.m.02316"; // glm.getMemID(i); //
 
-//            System.out.println(i + " "  + memberId);
-            String partyId = glm.getMemParty(memberId);
-            String statusId = glm.getMemStatus(memberId);
-
-            LanguageModel mSLM = glm.getMemSLM(memberId);
-            LanguageModel mGLM = glm.getMemITDSPLM(memberId, itNum);
-            LanguageModel pGLM = glm.getPartyITDSPLM(partyId, itNum);
-            LanguageModel sGLM = glm.getStatITDSPLM(statusId, itNum);
-            LanguageModel aGLM = glm.getAllITDSPLM(itNum);
-            
-            //
-            LanguageModel SLMm = new AspectAwareLM1(mSLM, mGLM);
-            LanguageModel SLMp = new AspectAwareLM1(mSLM, pGLM);
-            LanguageModel SLMs = new AspectAwareLM1(mSLM, sGLM);
-            LanguageModel SLMa = new AspectAwareLM1(mSLM, aGLM);
-            
-    //        
-
-//            LanguageModel mSLM = new SmoothedLM(glm.getMemSLM(memberId),all);
-//            LanguageModel mGLM = new SmoothedLM(glm.getMemITDSPLM(memberId, itNum),all);
-//            LanguageModel pGLM = new SmoothedLM(glm.getPartyITDSPLM(partyId, itNum),all);
-//            LanguageModel sGLM = new SmoothedLM(glm.getStatITDSPLM(statusId, itNum),all);
-
+            LanguageModel pGLM1 = glm.getPartyITDSPLM("nl.p.vvd", itNum);
+            LanguageModel pGLM2 = glm.getPartyITDSPLM("nl.p.pvda", itNum);
+            LanguageModel pGLM3 = glm.getPartyITDSPLM("nl.p.cda", itNum);
+            LanguageModel pGLM4 = glm.getPartyITDSPLM("nl.p.vvd", itNum);
+            LanguageModel pGLM5 = glm.getPartyITDSPLM("nl.p.sp", itNum);
+            LanguageModel pGLM6 = glm.getPartyITDSPLM("nl.p.d66", itNum);
+            LanguageModel pGLM7 = glm.getPartyITDSPLM("nl.p.gl", itNum);
+            LanguageModel pGLM8 = glm.getPartyITDSPLM("nl.p.cu", itNum);
 
             HashSet<String> allterms = new HashSet<>();
-//            allterms.addAll(all.LanguageModel.keySet());
-//            allterms.addAll(mSLM.LanguageModel.keySet());
-            allterms.addAll(mGLM.LanguageModel.keySet());
-            allterms.addAll(pGLM.LanguageModel.keySet());
-            allterms.addAll(sGLM.LanguageModel.keySet());
-            allterms.addAll(aGLM.LanguageModel.keySet());
-
-        
-         
+            allterms.addAll(pGLM1.LanguageModel.keySet());
+            allterms.addAll(pGLM2.LanguageModel.keySet());
+            allterms.addAll(pGLM3.LanguageModel.keySet());
+            allterms.addAll(pGLM4.LanguageModel.keySet());
+            allterms.addAll(pGLM5.LanguageModel.keySet());
+            allterms.addAll(pGLM6.LanguageModel.keySet());
+            allterms.addAll(pGLM7.LanguageModel.keySet());
+            allterms.addAll(pGLM8.LanguageModel.keySet());
             
-            /*
-            HashMap<Integer, String> lines = new HashMap<>();
-        lines = csvCreator(lines, mGLM , "mGLM");
-        lines = csvCreator(lines, pGLM , "pGLM");
-        lines = csvCreator(lines, sGLM , "sGLM");
-        lines = csvCreator(lines, aGLM , "aGLM");
-        //
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR/Output/example_"+period+".csv")));
-        for (Map.Entry<Integer, String> e : lines.entrySet()) {
-            bw.write(e.getValue() + "\n");
-        }
-        bw.close();
-          
-        
-            */
-            
-//            BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR/Output/train_" + memberId + "_" +period+".csv")));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR/Output/GLMs_2.csv")));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR/Output/Final/parties" + "_" +period+".csv")));
+//            BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR/Output/GLMss.csv")));
             String line = "";
 //            bw.write("class,member,party,status\n");
 //            bw.write("\"term\", \"tID\", \"CLM\",\"SLM\",\"SLMm\",\"SLMp\",\"SLMs\",\"SLMa\",\"mGLM\",\"pGLM\",\"sGLM\",\"aGLM\"\n");
-            bw.write("\"term\", \"tID\",\"mGLM\",\"pGLM\",\"sGLM\",\"aGLM\"\n");
+            bw.write("\"term\", \"tID\"\n");
             int tID = 0;
             for(Entry<String,Double> e: CLM.getSorted()){
                   String term = e.getKey();
@@ -107,16 +67,14 @@ public class main {
                   line = "" 
                      + "\""  + term + "\"" 
                      + ",\"" + tID + "\""
-//                     + ",\"" + CLM.getProb(term)+ "\""
-//                     + ",\"" + mSLM.getProb(term) + "\""
-//                     + ",\"" + SLMm.getProb(term) + "\"" 
-//                     + ",\"" + SLMp.getProb(term) + "\"" 
-//                     + ",\"" + SLMs.getProb(term) + "\"" 
-//                     + ",\"" + SLMa.getProb(term) + "\"" 
-                     + ",\"" + mGLM.getProb(term) + "\""
-                     + ",\"" + pGLM.getProb(term) + "\""
-                     + ",\"" + sGLM.getProb(term) + "\""  
-                     + ",\"" + aGLM.getProb(term) + "\""
+                     + ",\"" + pGLM1.getProb(term) + "\""
+                     + ",\"" + pGLM2.getProb(term) + "\""
+                     + ",\"" + pGLM3.getProb(term) + "\""
+                     + ",\"" + pGLM4.getProb(term) + "\""
+                     + ",\"" + pGLM5.getProb(term) + "\""
+                     + ",\"" + pGLM6.getProb(term) + "\""
+                     + ",\"" + pGLM7.getProb(term) + "\""
+                     + ",\"" + pGLM8.getProb(term) + "\""
                      + "\n";   
                 bw.write(line);
                 tID++;

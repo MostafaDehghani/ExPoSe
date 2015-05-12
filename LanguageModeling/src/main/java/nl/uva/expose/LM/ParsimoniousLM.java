@@ -104,19 +104,27 @@ public final class ParsimoniousLM extends LanguageModel {
     }
 
     public void generateParsimoniousLanguageModel() {
+        
+//        System.out.println(this.documentLM.LanguageModel.toString());
         for (int i = 0; i < this.numberOfIttereation; i++) {
             this.E_step(this.alpha);
             this.M_step(this.probThreshold);
+//            System.out.println("Itteration:" + i + " --> " + this.LanguageModel.toString());
         }
     }
     
     
     public static void main(String[] args) {
-        LanguageModel dlm = new LanguageModel();
-        dlm.LanguageModel.put("a", 0.3D);
-        dlm.LanguageModel.put("b", 0.3D);
-        dlm.LanguageModel.put("c", 0.3D);
-        dlm.LanguageModel.put("d", 0.1D);
+        LanguageModel d1lm = new LanguageModel();
+        d1lm.LanguageModel.put("a", 0.3D);
+        d1lm.LanguageModel.put("b", 0.3D);
+        d1lm.LanguageModel.put("c", 0.3D);
+        d1lm.LanguageModel.put("d", 0.1D);
+        
+        
+        LanguageModel d2lm = new LanguageModel();
+        d2lm.LanguageModel.put("a", 4D/5D);
+        d2lm.LanguageModel.put("b", 1D/5D);
         
         
         LanguageModel blm = new LanguageModel();
@@ -125,12 +133,14 @@ public final class ParsimoniousLM extends LanguageModel {
         blm.LanguageModel.put("c", 3D/15D);
         blm.LanguageModel.put("d", 1D/15D);
         
-        SampleGenerator sg = new SampleGenerator(blm);
-        for(int i=0;i<1000;i++)
-            System.out.println(sg.getSample(1000));
-        
-//        ParsimoniousLM dplm = new ParsimoniousLM(dlm, blm,0.1D,0.005D,100);
-//        
+
+        ParsimoniousLM dplm = new ParsimoniousLM(d1lm, blm,0.1D,0.005D,100);
 //        System.out.println(dplm.LanguageModel.toString());
+        
+        
+        SampleGenerator sg = new SampleGenerator(dplm);
+//        for(int i=0;i<1000;i++)
+        System.out.println(sg.getSample(10));
+        
     }
 }

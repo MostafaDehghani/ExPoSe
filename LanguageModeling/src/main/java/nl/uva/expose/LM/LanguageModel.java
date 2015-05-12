@@ -30,6 +30,24 @@ public class LanguageModel {
     public LanguageModel(HashMap<String, Double> LM) {
         this.LanguageModel = LM;
     }
+    
+    public String getProb(String term, Integer round){
+       Double prob = LanguageModel.get(term);
+       if(prob == null)
+           prob = 0D;
+       if(round<0)
+           return prob.toString();
+       return String.format("%."+ round + "f", prob);
+    }
+    
+    public Double getProb(String term){
+       Double prob = LanguageModel.get(term);
+       if(prob == null)
+           prob = 0D;
+       return  prob;
+    }
+    
+    
 
     public static List<Map.Entry<String, Double>> sortByValues(Map<String, Double> unsortMap, final boolean order) {
         List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());

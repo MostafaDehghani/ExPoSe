@@ -60,7 +60,7 @@ public class GeneralizedLM {
     public LanguageModel getMemSLM(String memId) throws IOException {
         LanguageModel mSLM = this.memSLM.get(memId);
         if (mSLM == null) {
-            Integer memIndexId = this.miInfo.getIndexId(memId);
+            Integer memIndexId = this.getMemIndexID(memId);
             StandardLM memslm = new StandardLM(miReader, memIndexId, this.field);
             this.memSLM.put(memId, memslm);
             mSLM = memslm;
@@ -133,7 +133,7 @@ public LanguageModel getMemITDSPLM(String memId, Integer itNum) throws IOExcepti
         LanguageModel mDSPLM = this.getMemSLM(memId);
         for (int it = itNum; it > 0;) {
             mDSPLM = this.getMemITDSPLM(memId, it - 1);
-            Integer memIndexId = this.miInfo.getIndexId(memId);
+            Integer memIndexId = this.getMemIndexID(memId);
             String memP = this.getMemParty(memIndexId);
             String memS = this.getMemStatus(memIndexId);
             ParsimoniousLM mPLMa = new ParsimoniousLM(mDSPLM, this.getAllITDSPLM(it - 1));
@@ -260,6 +260,8 @@ public LanguageModel getMemITDSPLM(String memId, Integer itNum) throws IOExcepti
         return pDSPLM;
     }
 
+    
+    
     public String getMemStatus(Integer memIndexId) throws IOException {
         String aff = "";
         HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
@@ -273,12 +275,33 @@ public LanguageModel getMemITDSPLM(String memId, Integer itNum) throws IOExcepti
 //        }
         return status;
     }
+    
+    public String getMemStatus(String memId) throws IOException {
+        Integer memIndexId = this.getMemIndexID(memId);
+        return this.getMemStatus(memIndexId);
+    }
 
+    
+    public Integer getMemIndexID(String memId) throws IOException{
+        Integer memIndexId = this.miInfo.getIndexId(memId);
+        return memIndexId;
+    }
+    
+    public String getMemID(Integer indexId) throws IOException{
+        String memId = this.miReader.document(indexId).get("ID");
+        return memId;
+    }
+    
     public String getPartyStatus(String partyName) throws IOException {
         String status = this.cabinet.getStatus(partyName);
         return status;
     }
 
+    public String getMemParty(String memId) throws IOException {
+        Integer memIndexId = this.getMemIndexID(memId);
+        return this.getMemParty(memIndexId);
+    }
+        
     public String getMemParty(Integer memIndexId) throws IOException {
         String aff = "";
         HashSet<String> affiliations = this.miInfo.getDocAllTerm(memIndexId, "AFF");
