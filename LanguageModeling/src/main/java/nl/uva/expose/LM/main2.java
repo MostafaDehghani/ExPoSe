@@ -159,9 +159,9 @@ public class main2 {
             String partyId = glm.getMemParty(memberId);
             String statusId = glm.getMemStatus(memberId);
             LanguageModel mSLM = new SmoothedLM(glm.getMemSLM(memberId),CLM);
-            LanguageModel mGLM = new SmoothedLM(glm.getMemITDSPLM(memberId, itNum),CLM);
-            LanguageModel pGLM = new SmoothedLM(glm.getPartyITDSPLM(partyId, itNum),CLM);
-            LanguageModel sGLM = new SmoothedLM(glm.getStatITDSPLM(statusId, itNum),CLM);
+            LanguageModel mGLM = new SmoothedLM(glm.getMemGLM(memberId, itNum),CLM);
+            LanguageModel pGLM = new SmoothedLM(glm.getPartyGLM(partyId, itNum),CLM);
+            LanguageModel sGLM = new SmoothedLM(glm.getStatGLM(statusId, itNum),CLM);
 
             LanguageModel mixedGLM = new LanguageModel();
             HashSet<String> allterms = new HashSet<>();

@@ -6,17 +6,13 @@
 package nl.uva.expose.Indexer;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import nl.uva.expose.data.Data;
 import static nl.uva.expose.settings.Config.configFile;
-import nl.uva.lucenefacility.IndexInfo;
 import nl.uva.lucenefacility.MyAnalyzer;
-import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.SimpleFSDirectory;

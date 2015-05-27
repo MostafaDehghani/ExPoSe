@@ -39,8 +39,8 @@ public class main1 {
             
             
             
-            String memberId2 =  "nl.m.03301"; // Mr.drs. MCG (Mona) Keijzer (CDA-second Mem)
-//            String memberId2 =  "nl.m.02316"; // Mr. S. (Sybrand) van Haersma Buma (CDA)
+//            String memberId2 =  "nl.m.03301"; // Mr.drs. MCG (Mona) Keijzer (CDA-second Mem)
+            String memberId2 =  "nl.m.02316"; // Mr. S. (Sybrand) van Haersma Buma (CDA)
 
 //            System.out.println(i + " "  + memberId);
             String partyId = glm.getMemParty(memberId);
@@ -53,20 +53,53 @@ public class main1 {
             System.out.println(partyId2);
             System.out.println(statusId2);
 
-//            LanguageModel mSLM = glm.getMemSLM(memberId);
-            LanguageModel mGLM = glm.getMemITDSPLM(memberId, itNum);
-            LanguageModel pGLM = glm.getPartyITDSPLM(partyId, itNum);
-            LanguageModel sGLM = glm.getStatITDSPLM(statusId, itNum);
-            LanguageModel aGLM = glm.getAllITDSPLM(itNum);
+            LanguageModel mSLM = glm.getMemSLM(memberId);
+            LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
+            LanguageModel pSLM = glm.getPartySLM(partyId);
+            LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
+            LanguageModel sSLM = glm.getStatSLM(statusId);
+            LanguageModel sGLM = glm.getStatGLM(statusId, itNum);
+            LanguageModel aSLM = glm.getAllSLM();
+            LanguageModel aGLM = glm.getAllGLM(itNum);
            
 
             LanguageModel mSLM2 = glm.getMemSLM(memberId2);
-            LanguageModel mGLM2 = glm.getMemITDSPLM(memberId2, itNum);
-            LanguageModel pGLM2 = glm.getPartyITDSPLM(partyId2, itNum);
-            LanguageModel sGLM2 = glm.getStatITDSPLM(statusId2, itNum);
-            
-            LanguageModel sSLM = glm.getStatSLM(statusId);
+            LanguageModel mGLM2 = glm.getMemGLM(memberId2, itNum);
+            LanguageModel pSLM2 = glm.getPartySLM(partyId2);
+            LanguageModel pGLM2 = glm.getPartyGLM(partyId2, itNum);
             LanguageModel sSLM2 = glm.getStatSLM(statusId2);
+            LanguageModel sGLM2 = glm.getStatGLM(statusId2, itNum);
+            
+            System.out.println(mSLM.LanguageModel.size());
+            System.out.println(mGLM.LanguageModel.size());
+            System.out.println(pSLM.LanguageModel.size());
+            System.out.println(pGLM.LanguageModel.size());
+            System.out.println(sSLM.LanguageModel.size());
+            System.out.println(sGLM.LanguageModel.size());
+            System.out.println(aSLM.LanguageModel.size());
+            System.out.println(aGLM.LanguageModel.size());
+            
+            if(true){
+                HashMap<Integer, String> lines = new HashMap<>();
+                lines = csvCreator(lines, mGLM , "mGLM");
+                lines = csvCreator(lines, pGLM , "pGLM");
+                lines = csvCreator(lines, sGLM , "sGLM");
+                lines = csvCreator(lines, aGLM , "aGLM");
+                lines = csvCreator(lines, mGLM2 , "mGLM2");
+                lines = csvCreator(lines, pGLM2 , "pGLM2");
+                lines = csvCreator(lines, sGLM2 , "sGLM2");
+
+                //
+                BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR2015/example_"+period+".csv")));
+                for (Map.Entry<Integer, String> e : lines.entrySet()) {
+                    bw.write(e.getValue() + "\n");
+                }
+                bw.close();
+                return;
+            
+            }           
+//            LanguageModel sSLM = glm.getStatSLM(statusId);
+//            LanguageModel sSLM2 = glm.getStatSLM(statusId2);
             
 //            LanguageModel SLMm1 = new AspectAwareLM1(mSLM, mGLM);
 //            LanguageModel SLMp1 = new AspectAwareLM1(mSLM, pGLM);
@@ -165,9 +198,9 @@ public class main1 {
             String partyId = glm.getMemParty(memberId);
             String statusId = glm.getMemStatus(memberId);
             LanguageModel mSLM = new SmoothedLM(glm.getMemSLM(memberId),CLM);
-            LanguageModel mGLM = new SmoothedLM(glm.getMemITDSPLM(memberId, itNum),CLM);
-            LanguageModel pGLM = new SmoothedLM(glm.getPartyITDSPLM(partyId, itNum),CLM);
-            LanguageModel sGLM = new SmoothedLM(glm.getStatITDSPLM(statusId, itNum),CLM);
+            LanguageModel mGLM = new SmoothedLM(glm.getMemGLM(memberId, itNum),CLM);
+            LanguageModel pGLM = new SmoothedLM(glm.getPartyGLM(partyId, itNum),CLM);
+            LanguageModel sGLM = new SmoothedLM(glm.getStatGLM(statusId, itNum),CLM);
 
             LanguageModel mixedGLM = new LanguageModel();
             HashSet<String> allterms = new HashSet<>();

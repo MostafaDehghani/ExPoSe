@@ -44,11 +44,12 @@ public class main {
             String partyId = glm.getMemParty(memberId);
             String statusId = glm.getMemStatus(memberId);
 
+//            LanguageModel aSLM = glm.ge
             LanguageModel mSLM = glm.getMemSLM(memberId);
-            LanguageModel mGLM = glm.getMemITDSPLM(memberId, itNum);
-            LanguageModel pGLM = glm.getPartyITDSPLM(partyId, itNum);
-            LanguageModel sGLM = glm.getStatITDSPLM(statusId, itNum);
-            LanguageModel aGLM = glm.getAllITDSPLM(itNum);
+            LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
+            LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
+            LanguageModel sGLM = glm.getStatGLM(statusId, itNum);
+            LanguageModel aGLM = glm.getAllGLM(itNum);
             
             //
             LanguageModel SLMm = new AspectAwareLM1(mSLM, mGLM);
@@ -59,9 +60,9 @@ public class main {
     //        
 
 //            LanguageModel mSLM = new SmoothedLM(glm.getMemSLM(memberId),all);
-//            LanguageModel mGLM = new SmoothedLM(glm.getMemITDSPLM(memberId, itNum),all);
-//            LanguageModel pGLM = new SmoothedLM(glm.getPartyITDSPLM(partyId, itNum),all);
-//            LanguageModel sGLM = new SmoothedLM(glm.getStatITDSPLM(statusId, itNum),all);
+//            LanguageModel mGLM = new SmoothedLM(glm.getMemGLM(memberId, itNum),all);
+//            LanguageModel pGLM = new SmoothedLM(glm.getPartyGLM(partyId, itNum),all);
+//            LanguageModel sGLM = new SmoothedLM(glm.getStatGLM(statusId, itNum),all);
 
 
             HashSet<String> allterms = new HashSet<>();
@@ -137,9 +138,9 @@ public class main {
             String partyId = glm.getMemParty(memberId);
             String statusId = glm.getMemStatus(memberId);
             LanguageModel mSLM = new SmoothedLM(glm.getMemSLM(memberId),CLM);
-            LanguageModel mGLM = new SmoothedLM(glm.getMemITDSPLM(memberId, itNum),CLM);
-            LanguageModel pGLM = new SmoothedLM(glm.getPartyITDSPLM(partyId, itNum),CLM);
-            LanguageModel sGLM = new SmoothedLM(glm.getStatITDSPLM(statusId, itNum),CLM);
+            LanguageModel mGLM = new SmoothedLM(glm.getMemGLM(memberId, itNum),CLM);
+            LanguageModel pGLM = new SmoothedLM(glm.getPartyGLM(partyId, itNum),CLM);
+            LanguageModel sGLM = new SmoothedLM(glm.getStatGLM(statusId, itNum),CLM);
 
             LanguageModel mixedGLM = new LanguageModel();
             HashSet<String> allterms = new HashSet<>();

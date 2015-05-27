@@ -19,8 +19,8 @@ public final class ParsimoniousLM extends LanguageModel {
     private LanguageModel documentLM;
     private HashMap<String, Double> documentTV;
     private LanguageModel tmpLM;
-    private Double alpha = 0.008D;
-    private Double probThreshold = 0.00001D;
+    private Double alpha = 0.005D;
+    private Double probThreshold = 0.0; //0.00001D;
     private Integer numberOfIttereation = 100;
 
     public ParsimoniousLM(LanguageModel documentLM, HashMap<String, Double> documentTV, LanguageModel backgroundLM,
@@ -93,7 +93,7 @@ public final class ParsimoniousLM extends LanguageModel {
         }
         for (Entry<String, Double> e : this.tmpLM.LanguageModel.entrySet()) {
             Double newProb = e.getValue() / summation;
-            if (newProb < probThreshold) {
+            if (newProb <= probThreshold) {
                 this.LanguageModel.remove(e.getKey());
             } else {
                 this.LanguageModel.put(e.getKey(), newProb);
@@ -134,7 +134,7 @@ public final class ParsimoniousLM extends LanguageModel {
         blm.LanguageModel.put("d", 1D/15D);
         
 
-        ParsimoniousLM dplm = new ParsimoniousLM(d1lm, blm,0.1D,0.005D,100);
+        ParsimoniousLM dplm = new ParsimoniousLM(d1lm, blm,0.1D,0.000D,100);
 //        System.out.println(dplm.LanguageModel.toString());
         
         

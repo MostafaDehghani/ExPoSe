@@ -85,17 +85,17 @@ public class main_ {
         LanguageModel SLM2 = new SmoothedLM(idsplm2.getPartySLM(party),all2);
         LanguageModel SLM3 = new SmoothedLM(idsplm3.getPartySLM(party),all3);
         
-        LanguageModel DSPLM1 = new SmoothedLM(idsplm1.getPartyITDSPLM(party,1),all1);
-        LanguageModel DSPLM2 = new SmoothedLM(idsplm2.getPartyITDSPLM(party,1),all2);
-        LanguageModel DSPLM3 = new SmoothedLM(idsplm3.getPartyITDSPLM(party,1),all3);
+        LanguageModel GLM1 = new SmoothedLM(idsplm1.getPartyGLM(party,1),all1);
+        LanguageModel GLM2 = new SmoothedLM(idsplm2.getPartyGLM(party,1),all2);
+        LanguageModel GLM3 = new SmoothedLM(idsplm3.getPartyGLM(party,1),all3);
         
         Double slm_d1 = div.JsdScore(SLM1.LanguageModel, SLM2.LanguageModel);
         Double slm_d2 = div.JsdScore(SLM1.LanguageModel, SLM3.LanguageModel);
         Double slm_d3 = div.JsdScore(SLM2.LanguageModel, SLM3.LanguageModel);
         
-        Double dsplm_d1 = div.JsdScore(DSPLM1.LanguageModel, DSPLM2.LanguageModel);
-        Double dsplm_d2 = div.JsdScore(DSPLM2.LanguageModel, DSPLM3.LanguageModel);
-        Double dsplm_d3 = div.JsdScore(DSPLM1.LanguageModel, DSPLM3.LanguageModel);
+        Double dsplm_d1 = div.JsdScore(GLM1.LanguageModel, GLM2.LanguageModel);
+        Double dsplm_d2 = div.JsdScore(GLM2.LanguageModel, GLM3.LanguageModel);
+        Double dsplm_d3 = div.JsdScore(GLM1.LanguageModel, GLM3.LanguageModel);
         
         System.out.println(party);
         
@@ -126,17 +126,17 @@ public class main_ {
         LanguageModel SLM2 = new SmoothedLM(idsplm2.getStatSLM(status),all2);
         LanguageModel SLM3 = new SmoothedLM(idsplm3.getStatSLM(status),all3);
         
-        LanguageModel DSPLM1 = new SmoothedLM(idsplm1.getStatITDSPLM(status,1),all1);
-        LanguageModel DSPLM2 = new SmoothedLM(idsplm2.getStatITDSPLM(status,1),all2);
-        LanguageModel DSPLM3 = new SmoothedLM(idsplm3.getStatITDSPLM(status,1),all3);
+        LanguageModel GLM1 = new SmoothedLM(idsplm1.getStatGLM(status,1),all1);
+        LanguageModel GLM2 = new SmoothedLM(idsplm2.getStatGLM(status,1),all2);
+        LanguageModel GLM3 = new SmoothedLM(idsplm3.getStatGLM(status,1),all3);
         
         Double slm_d1 = div.JsdScore(SLM1.LanguageModel, SLM2.LanguageModel);
         Double slm_d2 = div.JsdScore(SLM1.LanguageModel, SLM3.LanguageModel);
         Double slm_d3 = div.JsdScore(SLM2.LanguageModel, SLM3.LanguageModel);
         
-        Double dsplm_d1 = div.JsdScore(DSPLM1.LanguageModel, DSPLM2.LanguageModel);
-        Double dsplm_d2 = div.JsdScore(DSPLM2.LanguageModel, DSPLM3.LanguageModel);
-        Double dsplm_d3 = div.JsdScore(DSPLM1.LanguageModel, DSPLM3.LanguageModel);
+        Double dsplm_d1 = div.JsdScore(GLM1.LanguageModel, GLM2.LanguageModel);
+        Double dsplm_d2 = div.JsdScore(GLM2.LanguageModel, GLM3.LanguageModel);
+        Double dsplm_d3 = div.JsdScore(GLM1.LanguageModel, GLM3.LanguageModel);
         
         System.out.println(slm_d1 + "," + slm_d2 + "," +slm_d3 + ",");
         System.out.println(dsplm_d1 + "," + dsplm_d2 + "," +dsplm_d3 + ",");
@@ -167,20 +167,20 @@ public class main_ {
         LanguageModel SLMO3 = new SmoothedLM(idsplm3.getStatSLM(statusO),all3);
         LanguageModel SLMC3 = new SmoothedLM(idsplm3.getStatSLM(statusC),all3);
         
-        LanguageModel DSPLMO1 = new SmoothedLM(idsplm1.getStatITDSPLM(statusO,1),all1);
-        LanguageModel DSPLMC1 = new SmoothedLM(idsplm1.getStatITDSPLM(statusC,1),all1);
-        LanguageModel DSPLMO2 = new SmoothedLM(idsplm2.getStatITDSPLM(statusO,1),all2);
-        LanguageModel DSPLMC2 = new SmoothedLM(idsplm2.getStatITDSPLM(statusC,1),all2);
-        LanguageModel DSPLMO3 = new SmoothedLM(idsplm3.getStatITDSPLM(statusO,1),all3);
-        LanguageModel DSPLMC3 = new SmoothedLM(idsplm3.getStatITDSPLM(statusC,1),all3);
+        LanguageModel GLMO1 = new SmoothedLM(idsplm1.getStatGLM(statusO,1),all1);
+        LanguageModel GLMC1 = new SmoothedLM(idsplm1.getStatGLM(statusC,1),all1);
+        LanguageModel GLMO2 = new SmoothedLM(idsplm2.getStatGLM(statusO,1),all2);
+        LanguageModel GLMC2 = new SmoothedLM(idsplm2.getStatGLM(statusC,1),all2);
+        LanguageModel GLMO3 = new SmoothedLM(idsplm3.getStatGLM(statusO,1),all3);
+        LanguageModel GLMC3 = new SmoothedLM(idsplm3.getStatGLM(statusC,1),all3);
         
         Double slm_d1 = div.JsdScore(SLMO1.LanguageModel, SLMC1.LanguageModel);
         Double slm_d2 = div.JsdScore(SLMO2.LanguageModel, SLMC2.LanguageModel);
         Double slm_d3 = div.JsdScore(SLMO3.LanguageModel, SLMC3.LanguageModel);
         
-        Double dsplm_d1 = div.JsdScore(DSPLMO1.LanguageModel, DSPLMC1.LanguageModel);
-        Double dsplm_d2 = div.JsdScore(DSPLMO2.LanguageModel, DSPLMC2.LanguageModel);
-        Double dsplm_d3 = div.JsdScore(DSPLMO3.LanguageModel, DSPLMC3.LanguageModel);
+        Double dsplm_d1 = div.JsdScore(GLMO1.LanguageModel, GLMC1.LanguageModel);
+        Double dsplm_d2 = div.JsdScore(GLMO2.LanguageModel, GLMC2.LanguageModel);
+        Double dsplm_d3 = div.JsdScore(GLMO3.LanguageModel, GLMC3.LanguageModel);
         
         System.out.println(slm_d1 + "," + slm_d2 + "," +slm_d3 + ",");
         System.out.println(dsplm_d1 + "," + dsplm_d2 + "," +dsplm_d3 + ",");
@@ -198,62 +198,62 @@ public class main_ {
         
         LanguageModel PLM_vvd0 = plm.getPartySLM("nl.p.vvd");
         LanguageModel PLM_vvd1 = plm.getPartyPLM("nl.p.vvd");
-        LanguageModel PLM_vvd2 = idsplm.getPartyITDSPLM("nl.p.vvd",1);
+        LanguageModel PLM_vvd2 = idsplm.getPartyGLM("nl.p.vvd",1);
 
         LanguageModel PLM_pvda0 = plm.getPartySLM("nl.p.pvda");
         LanguageModel PLM_pvda1 = plm.getPartyPLM("nl.p.pvda");
-        LanguageModel PLM_pvda2 = idsplm.getPartyITDSPLM("nl.p.pvda",1);
+        LanguageModel PLM_pvda2 = idsplm.getPartyGLM("nl.p.pvda",1);
         
         LanguageModel PLM_cda0 = plm.getPartySLM("nl.p.cda");
         LanguageModel PLM_cda1 = plm.getPartyPLM("nl.p.cda");
-        LanguageModel PLM_cda2 = idsplm.getPartyITDSPLM("nl.p.cda",1);
+        LanguageModel PLM_cda2 = idsplm.getPartyGLM("nl.p.cda",1);
         
         LanguageModel PLM_pvv0 = plm.getPartySLM("nl.p.pvv");
         LanguageModel PLM_pvv1 = plm.getPartyPLM("nl.p.pvv");
-        LanguageModel PLM_pvv2 = idsplm.getPartyITDSPLM("nl.p.pvv",1);
+        LanguageModel PLM_pvv2 = idsplm.getPartyGLM("nl.p.pvv",1);
         
         LanguageModel PLM_sp0 = plm.getPartySLM("nl.p.sp");
         LanguageModel PLM_sp1 = plm.getPartyPLM("nl.p.sp");
-        LanguageModel PLM_sp2 = idsplm.getPartyITDSPLM("nl.p.sp",1);
+        LanguageModel PLM_sp2 = idsplm.getPartyGLM("nl.p.sp",1);
         
         LanguageModel PLM_d660 = plm.getPartySLM("nl.p.d66");
         LanguageModel PLM_d661 = plm.getPartyPLM("nl.p.d66");
-        LanguageModel PLM_d662 = idsplm.getPartyITDSPLM("nl.p.d66",1);
+        LanguageModel PLM_d662 = idsplm.getPartyGLM("nl.p.d66",1);
         
         LanguageModel PLM_cu0 = plm.getPartySLM("nl.p.cu");
         LanguageModel PLM_cu1 = plm.getPartyPLM("nl.p.cu");
-        LanguageModel PLM_cu2 = idsplm.getPartyITDSPLM("nl.p.cu",1);
+        LanguageModel PLM_cu2 = idsplm.getPartyGLM("nl.p.cu",1);
         
         LanguageModel PLM_gl0 = plm.getPartySLM("nl.p.gl");
         LanguageModel PLM_gl1 = plm.getPartyPLM("nl.p.gl");
-        LanguageModel PLM_gl2 = idsplm.getPartyITDSPLM("nl.p.gl",1);
+        LanguageModel PLM_gl2 = idsplm.getPartyGLM("nl.p.gl",1);
 
         
         HashMap<Integer, String> lines = new HashMap<>();
         lines = csvCreator(lines, PLM_vvd0, "SLM");
         lines = csvCreator(lines, PLM_vvd1, "PLM");
-        lines = csvCreator(lines, PLM_vvd2, "DSPLM");
+        lines = csvCreator(lines, PLM_vvd2, "GLM");
         lines = csvCreator(lines, PLM_pvda0, "SLM");
         lines = csvCreator(lines, PLM_pvda1, "PLM");
-        lines = csvCreator(lines, PLM_pvda2, "DSPLM");
+        lines = csvCreator(lines, PLM_pvda2, "GLM");
         lines = csvCreator(lines, PLM_cda0, "SLM");
         lines = csvCreator(lines, PLM_cda1, "PLM");
-        lines = csvCreator(lines, PLM_cda2, "DSPLM");
+        lines = csvCreator(lines, PLM_cda2, "GLM");
         lines = csvCreator(lines, PLM_pvv0, "SLM");
         lines = csvCreator(lines, PLM_pvv1, "PLM");
-        lines = csvCreator(lines, PLM_pvv2, "DSPLM");
+        lines = csvCreator(lines, PLM_pvv2, "GLM");
         lines = csvCreator(lines, PLM_sp0, "SLM");
         lines = csvCreator(lines, PLM_sp1, "PLM");
-        lines = csvCreator(lines, PLM_sp2, "DSPLM");
+        lines = csvCreator(lines, PLM_sp2, "GLM");
         lines = csvCreator(lines, PLM_d660, "SLM");
         lines = csvCreator(lines, PLM_d661, "PLM");
-        lines = csvCreator(lines, PLM_d662, "DSPLM");
+        lines = csvCreator(lines, PLM_d662, "GLM");
         lines = csvCreator(lines, PLM_cu0, "SLM");
         lines = csvCreator(lines, PLM_cu1, "PLM");
-        lines = csvCreator(lines, PLM_cu2, "DSPLM");
+        lines = csvCreator(lines, PLM_cu2, "GLM");
         lines = csvCreator(lines, PLM_gl0, "SLM");
         lines = csvCreator(lines, PLM_gl1, "PLM");
-        lines = csvCreator(lines, PLM_gl2, "DSPLM");
+        lines = csvCreator(lines, PLM_gl2, "GLM");
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/lm_parties_"+Period+".csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");
@@ -276,10 +276,10 @@ public class main_ {
 //        lines = csvCreator(lines, aPLM, "aPLM");
         lines = csvCreator(lines, OpoSLM, "OpoSLM");
 //        lines = csvCreator(lines, oldOpoPLM, "OpoPLM");
-//        lines = csvCreator(lines, newOpoPLM, "OpoDSPLM");
+//        lines = csvCreator(lines, newOpoPLM, "OpoGLM");
         lines = csvCreator(lines, CoaSLM, "CoaSLM");
 //        lines = csvCreator(lines, oldCoaPLM, "CoaPLM");
-//        lines = csvCreator(lines, newCoaPLM, "CoaDSPLM");
+//        lines = csvCreator(lines, newCoaPLM, "CoaGLM");
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/SIGIR_SHORT/tv_Status"+Period+".csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");

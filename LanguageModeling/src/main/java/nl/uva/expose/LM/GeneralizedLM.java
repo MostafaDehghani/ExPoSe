@@ -33,15 +33,15 @@ public class GeneralizedLM {
     private Cabinet cabinet;
 
     public LanguageModel aSLM;
-    private HashMap<Integer,LanguageModel> allDSPLM = new HashMap<Integer,LanguageModel>();
+    private HashMap<Integer,LanguageModel> allGLM = new HashMap<Integer,LanguageModel>();
     private HashMap<String, LanguageModel> memSLM = new HashMap<>();
     private HashMap<String, LanguageModel> statSLM = new HashMap<>();
     private HashMap<String, LanguageModel> partySLM = new HashMap<>();
-    private HashMap<Integer,HashMap<String, LanguageModel>> memDSPLM = new HashMap<Integer,HashMap<String, LanguageModel>>();
-    private HashMap<Integer,HashMap<String, LanguageModel>> statDSPLM_s1 = new HashMap<Integer,HashMap<String, LanguageModel>>();
-    private HashMap<Integer,HashMap<String, LanguageModel>> partyDSPLM_s1 = new HashMap<Integer,HashMap<String, LanguageModel>>();
-    private HashMap<Integer,HashMap<String, LanguageModel>> statDSPLM_s2 = new HashMap<Integer,HashMap<String, LanguageModel>>();
-    private HashMap<Integer,HashMap<String, LanguageModel>> partyDSPLM_s2 = new HashMap<Integer,HashMap<String, LanguageModel>>();
+    private HashMap<Integer,HashMap<String, LanguageModel>> memGLM = new HashMap<Integer,HashMap<String, LanguageModel>>();
+    private HashMap<Integer,HashMap<String, LanguageModel>> statGLM_s1 = new HashMap<Integer,HashMap<String, LanguageModel>>();
+    private HashMap<Integer,HashMap<String, LanguageModel>> partyGLM_s1 = new HashMap<Integer,HashMap<String, LanguageModel>>();
+    private HashMap<Integer,HashMap<String, LanguageModel>> statGLM_s2 = new HashMap<Integer,HashMap<String, LanguageModel>>();
+    private HashMap<Integer,HashMap<String, LanguageModel>> partyGLM_s2 = new HashMap<Integer,HashMap<String, LanguageModel>>();
 
     public GeneralizedLM(String period) throws IOException, Exception {
         this.period = period;
@@ -89,175 +89,179 @@ public class GeneralizedLM {
         }
         return statSLM;
     }
+        
+    public LanguageModel getAllSLM() throws IOException {    
+        return aSLM ;
+    }
 
-    public LanguageModel getAllITDSPLM(Integer itNum) throws IOException {
-        if (this.allDSPLM.size() > itNum) {
-            return this.allDSPLM.get(itNum); 
+    public LanguageModel getAllGLM(Integer itNum) throws IOException {
+        if (this.allGLM.size() > itNum) {
+            return this.allGLM.get(itNum); 
         }
-        LanguageModel aDSPLM = this.aSLM;
+        LanguageModel aGLM = this.aSLM;
         for (int it = itNum; it > 0;) {
-            aDSPLM = this.getAllITDSPLM(it - 1);
+            aGLM = this.getAllGLM(it - 1);
             LanguageModel newLM = null;
             for (int i = 0; i < this.miReader.numDocs(); i++) {
                 String mid = this.miReader.document(i).get("ID");
-                newLM = new ParsimoniousLM(aDSPLM, this.getMemITDSPLM(mid, it));
-                aDSPLM = newLM;
+                newLM = new ParsimoniousLM(aGLM, this.getMemGLM(mid, it));
+                aGLM = newLM;
             }
             for (int i = 0; i < this.piReader.numDocs(); i++) {
                 String pid = this.piReader.document(i).get("ID");
-                newLM = new ParsimoniousLM(aDSPLM, this.getPartyITDSPLM(pid, it));
-                aDSPLM = newLM;
+                newLM = new ParsimoniousLM(aGLM, this.getPartyGLM(pid, it));
+                aGLM = newLM;
             }
             for (int i = 0; i < this.statiReader.numDocs(); i++) {
                 String statid = this.statiReader.document(i).get("ID");
-                newLM = new ParsimoniousLM(aDSPLM, this.getStatITDSPLM(statid, it));
-                aDSPLM = newLM;
+                newLM = new ParsimoniousLM(aGLM, this.getStatGLM(statid, it));
+                aGLM = newLM;
             }
             it--;
         }
-    this.allDSPLM.put(itNum,aDSPLM);
-    return aDSPLM ;
+    this.allGLM.put(itNum,aGLM);
+    return aGLM ;
 }
 
-public LanguageModel getMemITDSPLM(String memId, Integer itNum) throws IOException {
-        HashMap<String, LanguageModel> msDSPLM = null;
-        if (this.memDSPLM.size()> itNum) {
-                msDSPLM = this.memDSPLM.get(itNum);
-                LanguageModel mDSPLM = msDSPLM.get(memId);
-                if(mDSPLM != null)
-                    return mDSPLM;
+public LanguageModel getMemGLM(String memId, Integer itNum) throws IOException {
+        HashMap<String, LanguageModel> msGLM = null;
+        if (this.memGLM.size()> itNum) {
+                msGLM = this.memGLM.get(itNum);
+                LanguageModel mGLM = msGLM.get(memId);
+                if(mGLM != null)
+                    return mGLM;
         }
         else{
-            msDSPLM = new HashMap<>();
+            msGLM = new HashMap<>();
         }
-        LanguageModel mDSPLM = this.getMemSLM(memId);
+        LanguageModel mGLM = this.getMemSLM(memId);
         for (int it = itNum; it > 0;) {
-            mDSPLM = this.getMemITDSPLM(memId, it - 1);
+            mGLM = this.getMemGLM(memId, it - 1);
             Integer memIndexId = this.getMemIndexID(memId);
             String memP = this.getMemParty(memIndexId);
             String memS = this.getMemStatus(memIndexId);
-            ParsimoniousLM mPLMa = new ParsimoniousLM(mDSPLM, this.getAllITDSPLM(it - 1));
-            ParsimoniousLM mPLMas = new ParsimoniousLM(mPLMa, this.getStatITDSPLM_s1(memS, it));
-            ParsimoniousLM mPLMasp = new ParsimoniousLM(mPLMas, this.getPartyITDSPLM_s1(memP, it));
-            mDSPLM = mPLMasp;
+            ParsimoniousLM mPLMa = new ParsimoniousLM(mGLM, this.getAllGLM(it - 1));
+            ParsimoniousLM mPLMas = new ParsimoniousLM(mPLMa, this.getStatGLM_s1(memS, it));
+            ParsimoniousLM mPLMasp = new ParsimoniousLM(mPLMas, this.getPartyGLM_s1(memP, it));
+            mGLM = mPLMasp;
             it--;
         }
-        msDSPLM.put(memId, mDSPLM);
-        this.memDSPLM.put(itNum,msDSPLM);
-        return mDSPLM;
+        msGLM.put(memId, mGLM);
+        this.memGLM.put(itNum,msGLM);
+        return mGLM;
     }
 
-    public LanguageModel getStatITDSPLM_s1(String statId, Integer itNum) throws IOException {
-        HashMap<String, LanguageModel> ssDSPLM = null;
-        if (this.statDSPLM_s1.size()> itNum) {
-                ssDSPLM = this.statDSPLM_s1.get(itNum);
-                LanguageModel sDSPLM = ssDSPLM.get(statId);
-                if(sDSPLM != null)
-                    return sDSPLM;
+    public LanguageModel getStatGLM_s1(String statId, Integer itNum) throws IOException {
+        HashMap<String, LanguageModel> ssGLM = null;
+        if (this.statGLM_s1.size()> itNum) {
+                ssGLM = this.statGLM_s1.get(itNum);
+                LanguageModel sGLM = ssGLM.get(statId);
+                if(sGLM != null)
+                    return sGLM;
         }
         else{
-            ssDSPLM = new HashMap<>();
+            ssGLM = new HashMap<>();
         }
-        LanguageModel sDSPLM = this.getStatSLM(statId);
+        LanguageModel sGLM = this.getStatSLM(statId);
         for (int it = itNum; it > 0;) {
-            sDSPLM =  getStatITDSPLM(statId,it - 1);
-            ParsimoniousLM sPLMa = new ParsimoniousLM(sDSPLM, this.getAllITDSPLM(it - 1));
-            sDSPLM = sPLMa;
+            sGLM =  getStatGLM(statId,it - 1);
+            ParsimoniousLM sPLMa = new ParsimoniousLM(sGLM, this.getAllGLM(it - 1));
+            sGLM = sPLMa;
             it--;
         }
-        ssDSPLM.put(statId, sDSPLM);
-        this.statDSPLM_s1.put(itNum,ssDSPLM);
-        return sDSPLM;
+        ssGLM.put(statId, sGLM);
+        this.statGLM_s1.put(itNum,ssGLM);
+        return sGLM;
     }
 
-    public LanguageModel getStatITDSPLM(String statId, Integer itNum) throws IOException {
-        HashMap<String, LanguageModel> ssDSPLM  = null;
-        if (this.statDSPLM_s2.size()> itNum) {
-                ssDSPLM = this.statDSPLM_s2.get(itNum);
-                LanguageModel sDSPLM = ssDSPLM.get(statId);
-                if(sDSPLM != null)
-                    return sDSPLM;
+    public LanguageModel getStatGLM(String statId, Integer itNum) throws IOException {
+        HashMap<String, LanguageModel> ssGLM  = null;
+        if (this.statGLM_s2.size()> itNum) {
+                ssGLM = this.statGLM_s2.get(itNum);
+                LanguageModel sGLM = ssGLM.get(statId);
+                if(sGLM != null)
+                    return sGLM;
         }
         else{
-            ssDSPLM = new HashMap<>();
+            ssGLM = new HashMap<>();
         }
-        LanguageModel sDSPLM = this.getStatITDSPLM_s1(statId, 0);
+        LanguageModel sGLM = this.getStatGLM_s1(statId, 0);
         for (int it = itNum; it > 0;) {
-            sDSPLM = getStatITDSPLM_s1(statId, it);
+            sGLM = getStatGLM_s1(statId, it);
             LanguageModel newLM = null;
             for (int i = 0; i < this.miReader.numDocs(); i++) {
                 if (this.getMemStatus(i).equals(statId)) {
                     String mid = this.miReader.document(i).get("ID");
-                    newLM = new ParsimoniousLM(sDSPLM, this.getMemITDSPLM(mid, it));
-                    sDSPLM = newLM;
+                    newLM = new ParsimoniousLM(sGLM, this.getMemGLM(mid, it));
+                    sGLM = newLM;
                 }
             }
             for (int i = 0; i < this.piReader.numDocs(); i++) {
                 String pid = this.piReader.document(i).get("ID");
                 if (this.getPartyStatus(pid).equals(statId)) {
-                    newLM = new ParsimoniousLM(sDSPLM, this.getPartyITDSPLM(pid, it));
-                    sDSPLM = newLM;
+                    newLM = new ParsimoniousLM(sGLM, this.getPartyGLM(pid, it));
+                    sGLM = newLM;
                 }
             }
             it--;
         }
-        ssDSPLM.put(statId, sDSPLM);
-        this.statDSPLM_s2.put(itNum,ssDSPLM);
-        return sDSPLM;
+        ssGLM.put(statId, sGLM);
+        this.statGLM_s2.put(itNum,ssGLM);
+        return sGLM;
     }
 
-    public LanguageModel getPartyITDSPLM_s1(String partyId, Integer itNum) throws IOException {
-        HashMap<String, LanguageModel> psDSPLM  = null;
-        if (this.partyDSPLM_s1.size()> itNum) {
-                psDSPLM = this.partyDSPLM_s1.get(itNum);
-                LanguageModel pDSPLM = psDSPLM.get(partyId);
-                if(pDSPLM != null)
-                    return pDSPLM;
+    public LanguageModel getPartyGLM_s1(String partyId, Integer itNum) throws IOException {
+        HashMap<String, LanguageModel> psGLM  = null;
+        if (this.partyGLM_s1.size()> itNum) {
+                psGLM = this.partyGLM_s1.get(itNum);
+                LanguageModel pGLM = psGLM.get(partyId);
+                if(pGLM != null)
+                    return pGLM;
         }
         else{
-            psDSPLM = new HashMap<>();
+            psGLM = new HashMap<>();
         }        
-        LanguageModel pDSPLM = this.getPartySLM(partyId);
+        LanguageModel pGLM = this.getPartySLM(partyId);
         for (int it = itNum; it > 0;) {
-                pDSPLM = this.getPartyITDSPLM(partyId,it - 1);
+                pGLM = this.getPartyGLM(partyId,it - 1);
                 String partS = this.getPartyStatus(partyId);
-                ParsimoniousLM pPLMa = new ParsimoniousLM(pDSPLM, this.getAllITDSPLM(it - 1));
-                ParsimoniousLM pPLMas = new ParsimoniousLM(pPLMa, this.getStatITDSPLM_s1(partS, it));
-                pDSPLM = pPLMas;
+                ParsimoniousLM pPLMa = new ParsimoniousLM(pGLM, this.getAllGLM(it - 1));
+                ParsimoniousLM pPLMas = new ParsimoniousLM(pPLMa, this.getStatGLM_s1(partS, it));
+                pGLM = pPLMas;
                 it--;
         }
-        psDSPLM.put(partyId, pDSPLM);
-        this.partyDSPLM_s1.put(itNum,psDSPLM);
-        return pDSPLM;
+        psGLM.put(partyId, pGLM);
+        this.partyGLM_s1.put(itNum,psGLM);
+        return pGLM;
     }
 
-    public LanguageModel getPartyITDSPLM(String partyId, Integer itNum) throws IOException {
-        HashMap<String, LanguageModel> psDSPLM  = null;
-        if (this.partyDSPLM_s2.size()> itNum) {
-                psDSPLM = this.partyDSPLM_s2.get(itNum);
-                LanguageModel pDSPLM = psDSPLM.get(partyId);
-                if(pDSPLM != null)
-                    return pDSPLM;
+    public LanguageModel getPartyGLM(String partyId, Integer itNum) throws IOException {
+        HashMap<String, LanguageModel> psGLM  = null;
+        if (this.partyGLM_s2.size()> itNum) {
+                psGLM = this.partyGLM_s2.get(itNum);
+                LanguageModel pGLM = psGLM.get(partyId);
+                if(pGLM != null)
+                    return pGLM;
         }
         else{
-            psDSPLM = new HashMap<>();
+            psGLM = new HashMap<>();
         } 
-        LanguageModel pDSPLM = this.getPartyITDSPLM_s1(partyId, 0);
+        LanguageModel pGLM = this.getPartyGLM_s1(partyId, 0);
         for (int it = itNum; it > 0;) {
-            pDSPLM = getPartyITDSPLM_s1(partyId, it);
+            pGLM = getPartyGLM_s1(partyId, it);
             LanguageModel newLM = null;
             for (int i = 0; i < this.miReader.numDocs(); i++) {
                 if (this.getMemParty(i).equals(partyId)) {
                     String mid = this.miReader.document(i).get("ID");
-                    newLM = new ParsimoniousLM(pDSPLM, this.getMemITDSPLM(mid, it));
-                    pDSPLM = newLM;
+                    newLM = new ParsimoniousLM(pGLM, this.getMemGLM(mid, it));
+                    pGLM = newLM;
                 }
             }
             it--;
         }
-        psDSPLM.put(partyId, pDSPLM);
-        this.partyDSPLM_s2.put(itNum,psDSPLM);
-        return pDSPLM;
+        psGLM.put(partyId, pGLM);
+        this.partyGLM_s2.put(itNum,psGLM);
+        return pGLM;
     }
 
     
