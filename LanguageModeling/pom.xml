@@ -50,7 +50,7 @@
                 <configuration>
                     <!--<mainClass>nl.uva.expose.clustering.SimGraphMaker</mainClass>-->
                     <arguments>
-                        <argument>-Xms6000m</argument>
+                        <argument>-Xms15000m</argument>
                     </arguments>
                     <!--<commandlineArgs>-Xms5g -Xmx7g</commandlineArgs>-->
                 </configuration>

@@ -17,7 +17,7 @@ public class Config {
 
     static {
         try {
-            File cFile = new File("/Users/Mosi/GitHub/ExPoSe/Config.properties");
+            File cFile = new File("/home/mdehghani/ExPoSe_Project/ExPoSe/Config.properties");
             log.info("\n.....Confog file path: " + cFile.getAbsolutePath() + "......");
             InputStream stream = new FileInputStream(cFile);
 //	      InputStream stream = Config.class.getResourceAsStream("Config.properties");
