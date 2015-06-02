@@ -1,5 +1,6 @@
-package nl.uva.expose.LM;
+package nl.uva.expose.glm;
 
+import nl.uva.expose.LM.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -116,36 +117,5 @@ public final class NewParsimoniousLM extends LanguageModel {
             this.E_step(this.alpha);
             this.M_step(this.probThreshold);
         }
-    }
-    
-    
-    public static void main(String[] args) {
-        LanguageModel d1lm = new LanguageModel();
-        d1lm.LanguageModel.put("a", 0.3D);
-        d1lm.LanguageModel.put("b", 0.3D);
-        d1lm.LanguageModel.put("c", 0.3D);
-        d1lm.LanguageModel.put("d", 0.1D);
-        
-        
-        LanguageModel d2lm = new LanguageModel();
-        d2lm.LanguageModel.put("a", 4D/5D);
-        d2lm.LanguageModel.put("b", 1D/5D);
-        
-        
-        LanguageModel blm = new LanguageModel();
-        blm.LanguageModel.put("a", 7D/15D);
-        blm.LanguageModel.put("b", 4D/15D);
-        blm.LanguageModel.put("c", 3D/15D);
-        blm.LanguageModel.put("d", 1D/15D);
-        
-
-        ParsimoniousLM dplm = new ParsimoniousLM(d1lm, blm,0.1D,0.000D,100);
-//        System.out.println(dplm.LanguageModel.toString());
-        
-        
-        SampleGenerator sg = new SampleGenerator(dplm);
-//        for(int i=0;i<1000;i++)
-        System.out.println(sg.getSample(10));
-        
     }
 }

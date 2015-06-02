@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.uva.expose.LM;
+package old;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +12,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import nl.uva.expose.LM.CollectionLM;
+import nl.uva.expose.LM.DSPLM;
+import nl.uva.expose.LM.Divergence;
+import nl.uva.expose.LM.GeneralizedLM;
+import nl.uva.expose.LM.LanguageModel;
+import nl.uva.expose.LM.ParsimoniousLM;
+import nl.uva.expose.LM.SmoothedLM;
+import nl.uva.expose.LM.StandardLM;
 import static nl.uva.expose.settings.Config.configFile;
 import nl.uva.lucenefacility.IndexInfo;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +40,7 @@ public class main_ {
     }
 
     public static void ParsimonizationExample(String period) throws Exception {
-        test idsplm = new test(period);
+        DSPLM idsplm = new DSPLM(period);
         
         LanguageModel all = idsplm.aSLM;
        
@@ -63,7 +71,7 @@ public class main_ {
 //        lines = csvCreator(lines, PLMC, "PLMC");
 //        lines = csvCreator(lines, sPLMC, "sPLMC");
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR/Output/example_"+period+".csv")));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR2015/example_"+period+".csv")));
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             bw.write(e.getValue() + "\n");
         }
