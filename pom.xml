@@ -6,8 +6,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>DataHandler</module>
         <module>Analyser</module>
+        <module>DataHandler</module>
         <module>LanguageModeling</module>
     </modules>
     <properties>

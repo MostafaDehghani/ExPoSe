@@ -94,7 +94,7 @@ public class Factorize {
 
         }
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/Users/Mosi/Desktop/ICTIR2015/factorization_" + period + ".csv")));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_" + period + ".csv")));
         for (Map.Entry<String, HashSet<String>> e : termsLbl.entrySet()) {
             String IDs="";
             for(String s:e.getValue())
