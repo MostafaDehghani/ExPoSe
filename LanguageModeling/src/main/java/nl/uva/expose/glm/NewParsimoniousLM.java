@@ -1,7 +1,8 @@
 package nl.uva.expose.glm;
 
-import nl.uva.expose.LM.*;
+import nl.uva.expose.lm.LanguageModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -118,4 +119,38 @@ public final class NewParsimoniousLM extends LanguageModel {
             this.M_step(this.probThreshold);
         }
     }
+    
+    
+        
+    public static void main(String[] args) {
+        LanguageModel d1lm = new LanguageModel();
+        d1lm.LanguageModel.put("a", 3/10D);
+        d1lm.LanguageModel.put("b", 3/10D);
+        d1lm.LanguageModel.put("c", 3/10D);
+        d1lm.LanguageModel.put("d", 1/10D);
+        
+        
+        LanguageModel d2lm = new LanguageModel();
+        d2lm.LanguageModel.put("a", 4D/5D);
+        d2lm.LanguageModel.put("b", 1D/5D);
+        
+        
+        LanguageModel blm = new LanguageModel();
+        blm.LanguageModel.put("a", 7D/15D);
+        blm.LanguageModel.put("b", 4D/15D);
+        blm.LanguageModel.put("c", 3D/15D);
+        blm.LanguageModel.put("d", 1D/15D);
+        
+
+        NewParsimoniousLM dplm_1 = new NewParsimoniousLM(d1lm, new ArrayList<LanguageModel>(Arrays.asList(blm)),0.1D,0.000D,100);
+        NewParsimoniousLM dplm_2 = new NewParsimoniousLM(d2lm, new ArrayList<LanguageModel>(Arrays.asList(blm)),0.1D,0.000D,100);
+        NewParsimoniousLM glm = new NewParsimoniousLM(blm, new ArrayList<LanguageModel>(Arrays.asList(dplm_1,dplm_2)),0.1D,0.000D,100);
+        NewParsimoniousLM glm2 = new NewParsimoniousLM(blm, new ArrayList<LanguageModel>(Arrays.asList(d1lm,d2lm)),0.1D,0.000D,100);
+
+        System.out.println(dplm_1.LanguageModel.toString());
+        System.out.println(dplm_2.LanguageModel.toString());
+        System.out.println(glm.LanguageModel.toString());
+        
+    }        
+        
 }

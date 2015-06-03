@@ -5,7 +5,9 @@
  */
 package nl.uva.expose.glm;
 
-import nl.uva.expose.LM.*;
+import nl.uva.expose.lm.StandardLM;
+import nl.uva.expose.lm.CollectionLM;
+import nl.uva.expose.lm.LanguageModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

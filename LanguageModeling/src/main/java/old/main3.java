@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import nl.uva.expose.LM.GeneralizedLM;
-import nl.uva.expose.LM.LanguageModel;
-import nl.uva.expose.LM.SmoothedLM;
+import nl.uva.expose.lm.GeneralizedLM;
+import nl.uva.expose.lm.LanguageModel;
+import nl.uva.expose.lm.SmoothedLM;
 import org.apache.commons.lang.StringUtils;
 
 /**

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package nl.uva.expose.LM.analysis;
+package nl.uva.expose.lm.analysis;
 
 import java.util.ArrayList;
 

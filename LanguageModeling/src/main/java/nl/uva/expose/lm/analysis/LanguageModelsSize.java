@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.uva.expose.LM.analysis;
+package nl.uva.expose.lm.analysis;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import nl.uva.expose.LM.GeneralizedLM;
-import nl.uva.expose.LM.LanguageModel;
+import nl.uva.expose.lm.GeneralizedLM;
+import nl.uva.expose.lm.LanguageModel;
 import org.apache.commons.lang.StringUtils;
 
 /**

@@ -1,4 +1,4 @@
-package nl.uva.expose.LM;
+package nl.uva.expose.lm;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -135,12 +135,12 @@ public final class ParsimoniousLM extends LanguageModel {
         
 
         ParsimoniousLM dplm = new ParsimoniousLM(d1lm, blm,0.1D,0.000D,100);
-//        System.out.println(dplm.LanguageModel.toString());
+        System.out.println(dplm.LanguageModel.toString());
         
         
-        SampleGenerator sg = new SampleGenerator(dplm);
+//        SampleGenerator sg = new SampleGenerator(dplm);
 //        for(int i=0;i<1000;i++)
-        System.out.println(sg.getSample(10));
+//        System.out.println(sg.getSample(10));
         
     }
 }

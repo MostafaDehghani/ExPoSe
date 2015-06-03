@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package nl.uva.expose.LM;
+package nl.uva.expose.lm;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +40,7 @@ public class AspectAwareLM extends LanguageModel{
         }
     }
 
-    private Double calculateDotProduct(nl.uva.expose.LM.LanguageModel LM1, nl.uva.expose.LM.LanguageModel LM2) {
+    private Double calculateDotProduct(nl.uva.expose.lm.LanguageModel LM1, nl.uva.expose.lm.LanguageModel LM2) {
         Double dotProduct = 0D;
         HashSet<String> allTerms = new HashSet<>();
         allTerms.addAll(LM1.LanguageModel.keySet());
@@ -51,7 +51,7 @@ public class AspectAwareLM extends LanguageModel{
         return dotProduct;
     }
 
-    private Double calculateSquareOfMagnitude(nl.uva.expose.LM.LanguageModel LM) {
+    private Double calculateSquareOfMagnitude(nl.uva.expose.lm.LanguageModel LM) {
         Double SM = 0D;
         for(Entry<String,Double> e: LM.LanguageModel.entrySet()){
             SM += Math.pow(e.getValue(), 2);
