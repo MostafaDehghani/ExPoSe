@@ -9,13 +9,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import nl.uva.expose.lm.LanguageModel;
 import nl.uva.expose.glm.NewGeneralizedLM;
+import nl.uva.expose.lm.GeneralizedLM;
+import nl.uva.expose.lm.LanguageModel;
 import static nl.uva.expose.settings.Config.configFile;
-import nl.uva.lucenefacility.IndexInfo;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.SimpleFSDirectory;
 
@@ -36,28 +34,21 @@ public class NewFactorize {
         IndexReader miReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
         IndexReader piReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/p")));
         IndexReader siReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/st")));
-        IndexInfo miInfo = new IndexInfo(miReader);
-        IndexInfo piInfo = new IndexInfo(piReader);
-        IndexInfo siInfo = new IndexInfo(siReader);
-
 
         NewGeneralizedLM glm = new NewGeneralizedLM(period);
         Integer itNum = 1;
 
-        HashMap<String, HashSet<String>> termsLbl = new HashMap<>();
+        Integer counter = 0;
+        Integer size = glm.getAllSLM().LanguageModel.size();
 
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("new_factorization_" + period + ".csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
-            termsLbl.put(term, new HashSet<String>());
-        }
-
-        for (String term : termsLbl.keySet()) {
-
+            HashSet<String> lbl = new HashSet<>();
+            Factorize.log.info(counter + " of " + size);
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
             if (aGLM.getProb(term) > 0) {
-                HashSet<String> lbl = termsLbl.get(term);
                 lbl.add("nl.all");
-                termsLbl.put(term, lbl);
             }
 
             //Statuses
@@ -65,9 +56,7 @@ public class NewFactorize {
                 String statusId = siReader.document(i).get("ID");
                 LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
                 if (sGLM.getProb(term) > 0) {
-                    HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(statusId);
-                    termsLbl.put(term, lbl);
                 }
             }
 
@@ -76,9 +65,7 @@ public class NewFactorize {
                 String partyId = piReader.document(i).get("ID");
                 LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
                 if (pGLM.getProb(term) > 0) {
-                    HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(partyId);
-                    termsLbl.put(term, lbl);
                 }
             }
 
@@ -87,21 +74,17 @@ public class NewFactorize {
                 String memberId = miReader.document(i).get("ID");
                 LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
                 if (mGLM.getProb(term) > 0) {
-                    HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(memberId);
-                    termsLbl.put(term, lbl);
                 }
             }
-
-        }
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("newfactorization_" + period + ".csv")));
-        for (Map.Entry<String, HashSet<String>> e : termsLbl.entrySet()) {
-            String IDs="";
-            for(String s:e.getValue())
+            String IDs = "";
+            for (String s : lbl) {
                 IDs += s + " ";
-            bw.write(e.getKey() + " " + IDs  +  "\n");
+            }
+            bw.write(term + " "  + lbl.size() + " " + IDs + "\n");
+            bw.flush();
         }
+
         bw.close();
     }
 }
