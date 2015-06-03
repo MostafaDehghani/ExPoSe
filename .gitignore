@@ -4,6 +4,7 @@
 */log/*
 nbactions.xml
 Config.properties
+*Config.java
 
 # Compiled source #
 ###################
