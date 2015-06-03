@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import nl.uva.expose.LM.GeneralizedLM;
 import nl.uva.expose.LM.LanguageModel;
+import nl.uva.expose.glm.NewGeneralizedLM;
 import static nl.uva.expose.settings.Config.configFile;
 import nl.uva.lucenefacility.IndexInfo;
 import org.apache.lucene.index.IndexReader;
@@ -23,9 +23,9 @@ import org.apache.lucene.store.SimpleFSDirectory;
  *
  * @author Mostafa Dehghani
  */
-public class Factorize {
+public class NewFactorize {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Factorize.class.getName());
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NewFactorize.class.getName());
 
     public static void main(String[] args) throws IOException, Exception {
         factorization("20122014");
@@ -41,7 +41,7 @@ public class Factorize {
         IndexInfo siInfo = new IndexInfo(siReader);
 
 
-        GeneralizedLM glm = new GeneralizedLM(period);
+        NewGeneralizedLM glm = new NewGeneralizedLM(period);
         Integer itNum = 1;
 
         HashMap<String, HashSet<String>> termsLbl = new HashMap<>();
