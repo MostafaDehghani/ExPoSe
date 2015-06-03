@@ -82,11 +82,11 @@ public class AspectAwareLM extends LanguageModel{
         
     
 //    
-//    private HashMap<String, Double> calculateUnitVector(nl.uva.expose.LM.LanguageModel aspectLM) {
+//    private HashMap<String, Double> calculateUnitVector(nl.uva.expose.lm.LanguageModel aspectLM) {
 //        Double aspectMag = this.calculateMagnitude(aspectLM);
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-//    private Double calculateMagnitude(nl.uva.expose.LM.LanguageModel aspectLM) {
+//    private Double calculateMagnitude(nl.uva.expose.lm.LanguageModel aspectLM) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
 

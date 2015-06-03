@@ -50,7 +50,9 @@ public class Factorize {
             termsLbl.put(term, new HashSet<String>());
         }
         
-        Factorize.log.info("All SLM size = " + termsLbl.size());
+        Factorize.log.info("Number of all terms:" + termsLbl.size());
+
+       
 
         for (String term : termsLbl.keySet()) {
 
@@ -61,13 +63,12 @@ public class Factorize {
                 lbl.add("nl.all");
                 termsLbl.put(term, lbl);
             }
-            
             Factorize.log.info("All's GLM is processed....");
-
+            
             //Statuses
             for (int i = 0; i < siReader.numDocs(); i++) {
                 String statusId = siReader.document(i).get("ID");
-                Factorize.log.info(i + ":" + statusId);
+                Factorize.log.info(i+":"+statusId);
                 LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
                 if (sGLM.getProb(term) > 0) {
                     HashSet<String> lbl = termsLbl.get(term);
@@ -75,27 +76,26 @@ public class Factorize {
                     termsLbl.put(term, lbl);
                 }
             }
-            Factorize.log.info("Statuses' GLMs are processed....");
+            Factorize.log.info("Statueses' GLMs are processed....");
 
             //Parties
             for (int i = 0; i < piReader.numDocs(); i++) {
                 String partyId = piReader.document(i).get("ID");
-                Factorize.log.info(i + ":" + partyId);
                 LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
+                Factorize.log.info(i+":"+partyId);
                 if (pGLM.getProb(term) > 0) {
                     HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(partyId);
                     termsLbl.put(term, lbl);
                 }
             }
-            
             Factorize.log.info("Parties' GLMs are processed....");
 
-
+            
             //Members
             for (int i = 0; i < miReader.numDocs(); i++) {
                 String memberId = miReader.document(i).get("ID");
-                Factorize.log.info(i + ":" + memberId);
+                Factorize.log.info(i+":"+memberId);
                 LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
                 if (mGLM.getProb(term) > 0) {
                     HashSet<String> lbl = termsLbl.get(term);
@@ -104,16 +104,16 @@ public class Factorize {
                 }
             }
             
-           Factorize.log.info("Members' GLMs are processed....");
-           
-        }
-        
-        Factorize.log.info("Wrting to file....");
+            Factorize.log.info("Members' GLMs are processed....");
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_test" + period + ".csv")));
+        }
+
+        Factorize.log.info("Writing to file....");
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_" + period + ".csv")));
         for (Map.Entry<String, HashSet<String>> e : termsLbl.entrySet()) {
             String IDs="";
-             Factorize.log.info(e.getKey());
+            Factorize.log.info("."); 
             for(String s:e.getValue())
                 IDs += s + " ";
             bw.write(e.getKey() + " " + IDs  +  "\n");
