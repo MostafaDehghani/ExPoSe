@@ -44,7 +44,7 @@ public class NewFactorize {
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("new_factorization_" + period + ".csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             HashSet<String> lbl = new HashSet<>();
-            Factorize.log.info(counter + " of " + size);
+            NewFactorize.log.info(counter + " of " + size);
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
             if (aGLM.getProb(term) > 0) {
