@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import nl.uva.expose.glm.NewGeneralizedLM;
-import nl.uva.expose.lm.GeneralizedLM;
 import nl.uva.expose.lm.LanguageModel;
 import static nl.uva.expose.settings.Config.configFile;
 import org.apache.lucene.index.IndexReader;
