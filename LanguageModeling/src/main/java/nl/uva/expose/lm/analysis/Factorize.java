@@ -40,7 +40,7 @@ public class Factorize {
         Integer counter = 0;
         Integer size = glm.getAllSLM().LanguageModel.size();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_" + period + ".csv")));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_0_" + period + ".csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             HashSet<String> lbl = new HashSet<>();
             Factorize.log.info(++counter + " of " + size);
