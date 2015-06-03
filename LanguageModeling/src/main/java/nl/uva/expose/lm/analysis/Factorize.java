@@ -36,88 +36,57 @@ public class Factorize {
         IndexReader miReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/m")));
         IndexReader piReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/p")));
         IndexReader siReader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("INDEXES_PATH") + period + "/st")));
-        IndexInfo miInfo = new IndexInfo(miReader);
-        IndexInfo piInfo = new IndexInfo(piReader);
-        IndexInfo siInfo = new IndexInfo(siReader);
-
 
         GeneralizedLM glm = new GeneralizedLM(period);
         Integer itNum = 1;
 
-        HashMap<String, HashSet<String>> termsLbl = new HashMap<>();
+        Integer counter = 0;
+        Integer size = glm.getAllSLM().LanguageModel.size();
 
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_" + period + ".csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
-            termsLbl.put(term, new HashSet<String>());
-        }
-        
-        Factorize.log.info("Number of all terms:" + termsLbl.size());
-
-       
-
-        for (String term : termsLbl.keySet()) {
-
+            HashSet<String> lbl = new HashSet<>();
+            Factorize.log.info(counter + " of " + size);
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
             if (aGLM.getProb(term) > 0) {
-                HashSet<String> lbl = termsLbl.get(term);
                 lbl.add("nl.all");
-                termsLbl.put(term, lbl);
             }
-            Factorize.log.info("All's GLM is processed....");
-            
+
             //Statuses
             for (int i = 0; i < siReader.numDocs(); i++) {
                 String statusId = siReader.document(i).get("ID");
-                Factorize.log.info(i+":"+statusId);
                 LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
                 if (sGLM.getProb(term) > 0) {
-                    HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(statusId);
-                    termsLbl.put(term, lbl);
                 }
             }
-            Factorize.log.info("Statueses' GLMs are processed....");
 
             //Parties
             for (int i = 0; i < piReader.numDocs(); i++) {
                 String partyId = piReader.document(i).get("ID");
                 LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
-                Factorize.log.info(i+":"+partyId);
                 if (pGLM.getProb(term) > 0) {
-                    HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(partyId);
-                    termsLbl.put(term, lbl);
                 }
             }
-            Factorize.log.info("Parties' GLMs are processed....");
 
-            
             //Members
             for (int i = 0; i < miReader.numDocs(); i++) {
                 String memberId = miReader.document(i).get("ID");
-                Factorize.log.info(i+":"+memberId);
                 LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
                 if (mGLM.getProb(term) > 0) {
-                    HashSet<String> lbl = termsLbl.get(term);
                     lbl.add(memberId);
-                    termsLbl.put(term, lbl);
                 }
             }
-            
-            Factorize.log.info("Members' GLMs are processed....");
-
-        }
-
-        Factorize.log.info("Writing to file....");
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_" + period + ".csv")));
-        for (Map.Entry<String, HashSet<String>> e : termsLbl.entrySet()) {
-            String IDs="";
-            Factorize.log.info("."); 
-            for(String s:e.getValue())
+            String IDs = "";
+            for (String s : lbl) {
                 IDs += s + " ";
-            bw.write(e.getKey() + " " + IDs  +  "\n");
+            }
+            bw.write(term + " "  + lbl.size() + " " + IDs + "\n");
+            bw.flush();
         }
+
         bw.close();
     }
 }
