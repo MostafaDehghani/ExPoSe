@@ -47,7 +47,7 @@ public class Factorize {
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
             if (aGLM.getProb(term) > 0) {
-                lbl.add("nl.all");
+                lbl.add("nl.all:"+aGLM.getProb(term));
             }
 
             //Statuses
@@ -55,7 +55,7 @@ public class Factorize {
                 String statusId = siReader.document(i).get("ID");
                 LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
                 if (sGLM.getProb(term) > 0) {
-                    lbl.add(statusId);
+                    lbl.add(statusId +":"+ sGLM.getProb(term));
                 }
             }
 
@@ -64,7 +64,7 @@ public class Factorize {
                 String partyId = piReader.document(i).get("ID");
                 LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
                 if (pGLM.getProb(term) > 0) {
-                    lbl.add(partyId);
+                    lbl.add(partyId +":"+ pGLM.getProb(term));
                 }
             }
 
@@ -73,7 +73,7 @@ public class Factorize {
                 String memberId = miReader.document(i).get("ID");
                 LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
                 if (mGLM.getProb(term) > 0) {
-                    lbl.add(memberId);
+                    lbl.add(memberId+":"+ mGLM.getProb(term));
                 }
             }
             String IDs = "";
