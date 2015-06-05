@@ -9,7 +9,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import nl.uva.expose.lm.GeneralizedLM;
 import nl.uva.expose.lm.LanguageModel;
 import static nl.uva.expose.settings.Config.configFile;
@@ -42,12 +49,12 @@ public class Factorize {
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization.csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
-            HashSet<String> lbl = new HashSet<>();
+            TreeMap<String, Double> lbl = new TreeMap<>();
             Factorize.log.info(++counter + " of " + size);
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
             if (aGLM.getProb(term) > 0) {
-                lbl.add("nl.all:"+aGLM.getProb(term));
+                lbl.put("nl.all", aGLM.getProb(term));
             }
 
             //Statuses
@@ -55,7 +62,7 @@ public class Factorize {
                 String statusId = siReader.document(i).get("ID");
                 LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
                 if (sGLM.getProb(term) > 0) {
-                    lbl.add(statusId +":"+ sGLM.getProb(term));
+                    lbl.put(statusId, sGLM.getProb(term));
                 }
             }
 
@@ -64,7 +71,7 @@ public class Factorize {
                 String partyId = piReader.document(i).get("ID");
                 LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
                 if (pGLM.getProb(term) > 0) {
-                    lbl.add(partyId +":"+ pGLM.getProb(term));
+                    lbl.put(partyId, pGLM.getProb(term));
                 }
             }
 
@@ -73,17 +80,33 @@ public class Factorize {
                 String memberId = miReader.document(i).get("ID");
                 LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
                 if (mGLM.getProb(term) > 0) {
-                    lbl.add(memberId+":"+ mGLM.getProb(term));
+                    lbl.put(memberId, mGLM.getProb(term));
                 }
             }
             String IDs = "";
-            for (String s : lbl) {
-                IDs += s + " ";
+            
+            
+
+            for ( Entry<String,Double> e: entriesSortedByValues(lbl) ) {
+                IDs += e.getKey() + ":" + e.getValue() + " ";
             }
-            bw.write(term + " "  + lbl.size() + " " + IDs + "\n");
+            bw.write(term + " " + lbl.size() + " " + IDs.trim() + "\n");
             bw.flush();
         }
 
         bw.close();
+    }
+
+   static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+            new Comparator<Map.Entry<K,V>>() {
+                @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+                    int res = e1.getValue().compareTo(e2.getValue());
+                    return res != 0 ? res : 1; // Special fix to preserve items with equal values
+                }
+            }
+        );
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
     }
 }
