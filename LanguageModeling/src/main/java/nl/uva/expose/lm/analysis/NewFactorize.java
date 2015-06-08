@@ -88,7 +88,7 @@ public class NewFactorize {
             for ( Map.Entry<String,Double> e: entriesSortedByValues(lbl) ) {
                 IDs += e.getKey() + ":" + e.getValue() + " ";
             }
-            bw.write(term + " " + lbl.size() + " " + IDs.trim() + "\n");
+            bw.write("\"" + term + "\" " + lbl.size() + " " + IDs.trim() + "\n");
             bw.flush();
         }
 

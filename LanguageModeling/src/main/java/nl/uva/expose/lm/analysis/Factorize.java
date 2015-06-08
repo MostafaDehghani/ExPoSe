@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedSet;
@@ -90,7 +88,7 @@ public class Factorize {
             for ( Entry<String,Double> e: entriesSortedByValues(lbl) ) {
                 IDs += e.getKey() + ":" + e.getValue() + " ";
             }
-            bw.write(term + " " + lbl.size() + " " + IDs.trim() + "\n");
+            bw.write("\"" + term + "\" " + lbl.size() + " " + IDs.trim() + "\n");
             bw.flush();
         }
 
