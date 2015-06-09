@@ -51,36 +51,37 @@ public class Factorize {
             Factorize.log.info(++counter + " of " + size);
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
+            Factorize.log.info("aGLM size -->" + aGLM.LanguageModel.size());
             if (aGLM.getProb(term) > 0) {
                 lbl.put("nl.all", aGLM.getProb(term));
             }
 
-            //Statuses
-            for (int i = 0; i < siReader.numDocs(); i++) {
-                String statusId = siReader.document(i).get("ID");
-                LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
-                if (sGLM.getProb(term) > 0) {
-                    lbl.put(statusId, sGLM.getProb(term));
-                }
-            }
-
-            //Parties
-            for (int i = 0; i < piReader.numDocs(); i++) {
-                String partyId = piReader.document(i).get("ID");
-                LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
-                if (pGLM.getProb(term) > 0) {
-                    lbl.put(partyId, pGLM.getProb(term));
-                }
-            }
-
-            //Members
-            for (int i = 0; i < miReader.numDocs(); i++) {
-                String memberId = miReader.document(i).get("ID");
-                LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
-                if (mGLM.getProb(term) > 0) {
-                    lbl.put(memberId, mGLM.getProb(term));
-                }
-            }
+//            //Statuses
+//            for (int i = 0; i < siReader.numDocs(); i++) {
+//                String statusId = siReader.document(i).get("ID");
+//                LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
+//                if (sGLM.getProb(term) > 0) {
+//                    lbl.put(statusId, sGLM.getProb(term));
+//                }
+//            }
+//
+//            //Parties
+//            for (int i = 0; i < piReader.numDocs(); i++) {
+//                String partyId = piReader.document(i).get("ID");
+//                LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
+//                if (pGLM.getProb(term) > 0) {
+//                    lbl.put(partyId, pGLM.getProb(term));
+//                }
+//            }
+//
+//            //Members
+//            for (int i = 0; i < miReader.numDocs(); i++) {
+//                String memberId = miReader.document(i).get("ID");
+//                LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
+//                if (mGLM.getProb(term) > 0) {
+//                    lbl.put(memberId, mGLM.getProb(term));
+//                }
+//            }
             String IDs = "";
             
             

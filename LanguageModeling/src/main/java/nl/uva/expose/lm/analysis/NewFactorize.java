@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -46,7 +45,7 @@ public class NewFactorize {
         Integer size = glm.getAllSLM().LanguageModel.size();
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("new_factorization_sort.csv")));
-                for (String term : glm.getAllSLM().LanguageModel.keySet()) {
+        for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             TreeMap<String, Double> lbl = new TreeMap<>();
             NewFactorize.log.info(++counter + " of " + size);
             // in all
