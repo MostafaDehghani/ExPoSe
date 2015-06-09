@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import nl.uva.expose.lm.ParsimoniousLM;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,7 +25,7 @@ public final class NewParsimoniousLM extends LanguageModel {
     private HashMap<String, Double> documentTV;
     private LanguageModel tmpLM;
     private Double alpha = 0.005D;
-    private Double probThreshold = 0.0; //1e-6; //0.00001D;
+    private Double probThreshold = Double.MIN_VALUE; //1e-6; //0.00001D;
     private Integer numberOfIttereation = 100;
 
     public NewParsimoniousLM(LanguageModel documentLM, HashMap<String, Double> documentTV, ArrayList<LanguageModel> backgroundLM,
@@ -146,10 +147,14 @@ public final class NewParsimoniousLM extends LanguageModel {
         NewParsimoniousLM dplm_2 = new NewParsimoniousLM(d2lm, new ArrayList<LanguageModel>(Arrays.asList(blm)),0.1D,0.000D,100);
         NewParsimoniousLM glm = new NewParsimoniousLM(blm, new ArrayList<LanguageModel>(Arrays.asList(dplm_1,dplm_2)),0.1D,0.000D,100);
         NewParsimoniousLM glm2 = new NewParsimoniousLM(blm, new ArrayList<LanguageModel>(Arrays.asList(d1lm,d2lm)),0.1D,0.000D,100);
+        ParsimoniousLM glm_ = new ParsimoniousLM(blm, dplm_1,0.1D,0.000D,100);
+        glm_ = new ParsimoniousLM(glm, dplm_2,0.1D,0.000D,100);
 
-        System.out.println(dplm_1.LanguageModel.toString());
-        System.out.println(dplm_2.LanguageModel.toString());
+//        System.out.println(dplm_1.LanguageModel.toString());
+//        System.out.println(dplm_2.LanguageModel.toString());
         System.out.println(glm.LanguageModel.toString());
+        System.out.println(glm_.LanguageModel.toString());
+//        System.out.println(glm2.LanguageModel.toString());
         
     }        
         
