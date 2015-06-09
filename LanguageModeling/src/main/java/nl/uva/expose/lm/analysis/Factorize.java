@@ -46,7 +46,7 @@ public class Factorize {
         Integer size = glm.getAllSLM().LanguageModel.size();
 
         for(String t : glm.getAllGLM(itNum).LanguageModel.keySet()){
-            System.out.println(t+ " : " + glm.getAllGLM(itNum).LanguageModel.get(t));
+            System.out.println(t+ " : " + glm.getAllGLM(itNum).getProb(t));
         }
         if(true)
             return;
