@@ -45,7 +45,7 @@ public class Factorize {
         Integer counter = 0;
         Integer size = glm.getAllSLM().LanguageModel.size();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization_test.csv")));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization-test.csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             TreeMap<String, Double> lbl = new TreeMap<>();
             Factorize.log.info(++counter + " of " + size);
@@ -53,35 +53,36 @@ public class Factorize {
             LanguageModel aGLM = glm.getAllGLM(itNum);
             Factorize.log.info("aGLM size -->" + aGLM.LanguageModel.size());
             if (aGLM.getProb(term) > 0) {
+                System.out.println("nl.all putted on lbl");
                 lbl.put("nl.all", aGLM.getProb(term));
             }
 
-//            //Statuses
-//            for (int i = 0; i < siReader.numDocs(); i++) {
-//                String statusId = siReader.document(i).get("ID");
-//                LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
-//                if (sGLM.getProb(term) > 0) {
-//                    lbl.put(statusId, sGLM.getProb(term));
-//                }
-//            }
-//
-//            //Parties
-//            for (int i = 0; i < piReader.numDocs(); i++) {
-//                String partyId = piReader.document(i).get("ID");
-//                LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
-//                if (pGLM.getProb(term) > 0) {
-//                    lbl.put(partyId, pGLM.getProb(term));
-//                }
-//            }
-//
-//            //Members
-//            for (int i = 0; i < miReader.numDocs(); i++) {
-//                String memberId = miReader.document(i).get("ID");
-//                LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
-//                if (mGLM.getProb(term) > 0) {
-//                    lbl.put(memberId, mGLM.getProb(term));
-//                }
-//            }
+            //Statuses
+            for (int i = 0; i < siReader.numDocs(); i++) {
+                String statusId = siReader.document(i).get("ID");
+                LanguageModel sGLM = glm.getStatGLM_s1(statusId, itNum);
+                if (sGLM.getProb(term) > 0) {
+                    lbl.put(statusId, sGLM.getProb(term));
+                }
+            }
+
+            //Parties
+            for (int i = 0; i < piReader.numDocs(); i++) {
+                String partyId = piReader.document(i).get("ID");
+                LanguageModel pGLM = glm.getPartyGLM(partyId, itNum);
+                if (pGLM.getProb(term) > 0) {
+                    lbl.put(partyId, pGLM.getProb(term));
+                }
+            }
+
+            //Members
+            for (int i = 0; i < miReader.numDocs(); i++) {
+                String memberId = miReader.document(i).get("ID");
+                LanguageModel mGLM = glm.getMemGLM(memberId, itNum);
+                if (mGLM.getProb(term) > 0) {
+                    lbl.put(memberId, mGLM.getProb(term));
+                }
+            }
             String IDs = "";
             
             
@@ -89,6 +90,7 @@ public class Factorize {
             for ( Entry<String,Double> e: entriesSortedByValues(lbl) ) {
                 IDs += e.getKey() + ":" + e.getValue() + " ";
             }
+            System.out.println(IDs);
             bw.write("\"" + term + "\" " + lbl.size() + " " + IDs.trim() + "\n");
             bw.flush();
         }
