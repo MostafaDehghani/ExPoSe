@@ -45,7 +45,7 @@ public class NewFactorize {
         Integer counter = 0;
         Integer size = glm.getAllSLM().LanguageModel.size();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("new_factorization.csv")));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("new_factorization_sort.csv")));
                 for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             TreeMap<String, Double> lbl = new TreeMap<>();
             NewFactorize.log.info(++counter + " of " + size);
