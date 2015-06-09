@@ -45,7 +45,12 @@ public class Factorize {
         Integer counter = 0;
         Integer size = glm.getAllSLM().LanguageModel.size();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization-test.csv")));
+        for(String t : glm.getAllGLM(itNum).LanguageModel.keySet()){
+            System.out.println(t+ " : " + glm.getAllGLM(itNum).LanguageModel.get(t));
+        }
+        if(true)
+            return;
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization.csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             TreeMap<String, Double> lbl = new TreeMap<>();
             Factorize.log.info(++counter + " of " + size);
@@ -53,7 +58,7 @@ public class Factorize {
             LanguageModel aGLM = glm.getAllGLM(itNum);
             Factorize.log.info("aGLM size -->" + aGLM.LanguageModel.size());
             if (aGLM.getProb(term) > 0) {
-                System.out.println("nl.all putted on lbl");
+                Factorize.log.info("nl.all putted on lbl");
                 lbl.put("nl.all", aGLM.getProb(term));
             }
 
@@ -85,12 +90,10 @@ public class Factorize {
             }
             String IDs = "";
             
-            
 
             for ( Entry<String,Double> e: entriesSortedByValues(lbl) ) {
                 IDs += e.getKey() + ":" + e.getValue() + " ";
             }
-            System.out.println(IDs);
             bw.write("\"" + term + "\" " + lbl.size() + " " + IDs.trim() + "\n");
             bw.flush();
         }
