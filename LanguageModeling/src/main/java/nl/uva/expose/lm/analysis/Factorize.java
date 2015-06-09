@@ -45,21 +45,13 @@ public class Factorize {
         Integer counter = 0;
         Integer size = glm.getAllSLM().LanguageModel.size();
 
-        System.out.println(glm.getAllGLM(itNum).LanguageModel.size());
-        for(String t : glm.getAllGLM(itNum).LanguageModel.keySet()){
-            System.out.println(t+ " : " + glm.getAllGLM(itNum).getProb(t));
-        }
-        if(true)
-            return;
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File("factorization.csv")));
         for (String term : glm.getAllSLM().LanguageModel.keySet()) {
             TreeMap<String, Double> lbl = new TreeMap<>();
             Factorize.log.info(++counter + " of " + size);
             // in all
             LanguageModel aGLM = glm.getAllGLM(itNum);
-            Factorize.log.info("aGLM size -->" + aGLM.LanguageModel.size());
             if (aGLM.getProb(term) > 0) {
-                Factorize.log.info("nl.all putted on lbl");
                 lbl.put("nl.all", aGLM.getProb(term));
             }
 
